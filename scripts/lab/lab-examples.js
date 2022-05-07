@@ -4,7 +4,7 @@
  * @author Cliff Hall <cliff@futurescale.com> (https://twitter.com/seaofarrows)
  */
 
-const { nameToId } =  require('../domain');
+const { nameToId } = require('fismo');
 
 //--------------------------------------------------
 // Define Machines

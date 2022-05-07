@@ -13,11 +13,18 @@ This machine, a representation of one of your machines, installed in your instan
 Done or in progress are:
 * ✅ Project structure
 * ✅ Backlink from SDK docs
-* 👉 Clone a Fismo instance on a supported chain.
-* 👉 Install and optionally initialize storage for your own machines.
-* 👉 Add more states and transitions to your installed machines.
-* 👉 Invoke actions on your machines.
-* 👉 Query a user's current state, last position, and position history.
+* ✅ Using Fismo NPM package
+* Write scripts for Node.js
+    * 👉 Clone a Fismo instance on a supported chain
+  * 👉 Install machines and optionally initialize storage
+  * 👉 Add moew states and transitions to installed machines
+* Write HTML/JS
+  * ✅ Prove JS entities are present and work
+  * 👉 Invoke actions on machines
+  * 👉 Query a user's current state, last position, and position history
+* Example topics
+  * Utilizing machine-specific storage
+  * Token-gating
 * 👉 "How to" doc with demo as subject
 
 ##  [![Created by Futurescale](docs/images/created-by.png)](https://futurescale.com)

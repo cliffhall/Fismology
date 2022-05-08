@@ -3,7 +3,7 @@
 [Fismo](https://github.com/cliffhall/Fismo) Machines are a way of simulating processes, branching narratives, maps of places, or nearly any stateful thing you can imagine. This project explores ways of using Fismo to build cool things.
 
 ![Fismology Machine](docs/images/Fismology-machine.png)
-This machine, one of your machines installed in your instance of our machine, was created by another machine, using [Midjourney](https://twitter.com/midjourney).
+**Above:** One of your machines installed a cloned instance of our machine. Created by another machine, using [Midjourney](https://twitter.com/midjourney). 🤖
 
 ## 📖 [SDK Documentation](https://docs.fismo.xyz/dev/sdk.html)
 ## 🗄 [Fismo Protocol Source](https://github.com/cliffhall/Fismo)

@@ -27,12 +27,17 @@
     "test": "npx hardhat test",
     "lint": "solhint 'contracts/**/*.sol'",
     "size": "npx hardhat size-contracts",
-    "deploy:local": "npx hardhat run --network hardhat scripts/deploy/deploy-and-verify-all.js",
-    "deploy:poly:test": "npx hardhat run --network poly-test scripts/deploy/deploy-and-verify-all.js >> logs/deploy.fismo.poly.test.txt",
-    "deploy:poly:main": "npx hardhat run --network poly-main scripts/deploy/deploy-and-verify-all.js >> logs/deploy.fismo.poly.main.txt",
-    "deploy:eth:test": "npx hardhat run --network eth-test scripts/deploy/deploy-and-verify-all.js >> logs/deploy.fismo.eth.test.txt",
-    "deploy:eth:test-2": "npx hardhat run --network eth-test-2 scripts/deploy/deploy-and-verify-all.js >> logs/deploy.fismo.eth.test.2.txt",
-    "deploy:eth:main": "npx hardhat run --network eth-main scripts/deploy/deploy-and-verify-all.js >> logs/deploy.fismo.eth.main.txt"
+    "clone:fismo:poly:test": "npx hardhat run --network poly-test scripts/deploy/clone-fismo.js >> logs/clone.poly.test.txt",
+    "clone:fismo:poly:main": "npx hardhat run --network poly-main scripts/deploy/clone-fismo.js >> logs/clone.poly.main.txt",
+    "clone:fismo:eth:test": "npx hardhat run --network eth-test scripts/deploy/clone-fismo.js >> logs/clone.eth.test.txt",
+    "clone:fismo:eth:test-2": "npx hardhat run --network eth-test-2 scripts/deploy/clone-fismo.js >> logs/clone.eth.test.2.txt",
+    "clone:fismo:eth:main": "npx hardhat run --network eth-main scripts/deploy/clone-fismo.js >> logs/clone.eth.main.txt",
+    "deploy:labs:local": "npx hardhat run --network hardhat scripts/deploy/deploy-and-verify-labs.js",
+    "deploy:labs:poly:test": "npx hardhat run --network poly-test scripts/deploy/deploy-and-verify-labs.js >> logs/deploy.labs.poly.test.txt",
+    "deploy:labs:poly:main": "npx hardhat run --network poly-main scripts/deploy/deploy-and-verify-labs.js >> logs/deploy.labs.poly.main.txt",
+    "deploy:labs:eth:test": "npx hardhat run --network eth-test scripts/deploy/deploy-and-verify-labs.js >> logs/deploy.labs.eth.test.txt",
+    "deploy:labs:eth:test-2": "npx hardhat run --network eth-test-2 scripts/deploy/deploy-and-verify-labs.js >> logs/deploy.labs.eth.test.2.txt",
+    "deploy:labs:eth:main": "npx hardhat run --network eth-main scripts/deploy/deploy-and-verify-labs.js >> logs/deploy.labs.eth.main.txt"
   },
   "dependencies": {
     "fismo": "^0.6.0"

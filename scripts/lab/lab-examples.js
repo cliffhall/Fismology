@@ -4,7 +4,7 @@
  * @author Cliff Hall <cliff@futurescale.com> (https://twitter.com/seaofarrows)
  */
 
-const { nameToId } = require('fismo');
+const { nameToId } = require('fismo/sdk/node');
 
 //--------------------------------------------------
 // Define Machines

@@ -9,7 +9,12 @@ module.exports = {
     "network": {
 
         "hardhat": {  // hardhat local network
-            "gasLimit": "5000000"
+            "gasLimit": "5000000",
+            "chain": {
+                "title": "Hardhat Local",
+                "name": "hardhat",
+                "chainId": 31337
+            }
         },
 
         "eth-test": {  // Ethereum Rinkeby testnet
@@ -21,6 +26,10 @@ module.exports = {
                 "title": "Rinkeby Testnet",
                 "name": "rinkeby",
                 "chainId": 4
+            },
+            "deployments": {
+                "fismo": "[YOUR_FISMO_OR_CLONE_ADDRESS]",
+                "operator": "[YOUR_OPERATOR_OR_CLONE_ADDRESS]",
             }
         },
 
@@ -33,6 +42,10 @@ module.exports = {
                 "title": "Ethereum Mainnet",
                 "name": "homestead",
                 "chainId": 1
+            },
+            "deployments": {
+                "fismo": "[YOUR_FISMO_OR_CLONE_ADDRESS]",
+                "operator": "[YOUR_OPERATOR_OR_CLONE_ADDRESS]",
             }
         },
 
@@ -45,6 +58,10 @@ module.exports = {
                 "title": "Polygon Mumbai Testnet",
                 "name": "mumbai",
                 "chainId": 80001
+            },
+            "deployments": {
+                "fismo": "[YOUR_FISMO_OR_CLONE_ADDRESS]",
+                "operator": "[YOUR_OPERATOR_OR_CLONE_ADDRESS]",
             }
         },
 
@@ -57,6 +74,10 @@ module.exports = {
                 "title": "Polygon Matic Mainnet",
                 "name": "matic",
                 "chainId": 137
+            },
+            "deployments": {
+                "fismo": "[YOUR_FISMO_OR_CLONE_ADDRESS]",
+                "operator": "[YOUR_OPERATOR_OR_CLONE_ADDRESS]",
             }
         }
     },

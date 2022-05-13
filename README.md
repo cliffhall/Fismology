@@ -25,6 +25,7 @@ Done or in progress are:
 * Example topics
   * Utilizing machine-specific storage
   * Token-gating
+  * Self-targeting state transitions
 * 👉 "How to" doc with demo as subject
 
 ##  [![Created by Futurescale](docs/images/created-by.png)](https://futurescale.com)

@@ -4,7 +4,7 @@ const ethers = hre.ethers;
 /**
  * Deploy Tokens
  *
- * ERC20, ERC721, and ERC1155 example tokens for unit tests
+ * ERC20, ERC721, and ERC1155 example tokens
  *
  * @param gasLimit - gasLimit for transactions
  *

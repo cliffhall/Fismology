@@ -8,7 +8,7 @@ One of your machines, installed in a clone of our machine. Created by another ma
 ## 📖 [SDK Documentation](https://docs.fismo.xyz/dev/sdk.html)
 ## 🗄 [Fismo Protocol Source](https://github.com/cliffhall/Fismo)
 ## 📋 Status
-### [![Node.js CI](https://github.com/cliffhall/Fismo/actions/workflows/node.js.yml/badge.svg)](https://github.com/cliffhall/Fismo/actions/workflows/node.js.yml) 🔬 ![46%](https://progress-bar.dev/46/?title=Progress&width=100&color=0c0c0c)
+### [![Node.js CI](https://github.com/cliffhall/Fismo/actions/workflows/node.js.yml/badge.svg)](https://github.com/cliffhall/Fismo/actions/workflows/node.js.yml) 🔬 ![57%](https://progress-bar.dev/57/?title=Progress&width=100&color=0c0c0c)
 
 Done or in progress are:
 * ✅ Project structure
@@ -16,16 +16,19 @@ Done or in progress are:
 * ✅ Using Fismo NPM package
 * Write scripts for Node.js
   * ✅ Clone a Fismo instance on a supported chain
-  * 👉 Install machines and optionally initialize storage
+  * ✅ Install machines and optionally initialize storage
   * 👉 Add new states and transitions to installed machines
 * Write HTML/JS
   * ✅ Prove self-validating entities are present and usable
   * 👉 Invoke actions on machines
   * 👉 Query a user's current state, last position, and position history
-* Lab example topics
+* Lab experiment topics
   * ✅ Token-gated state transitions
-  * 👉 Utilizing machine-specific storage
+  * ✅ Machine-specific storage slots
+  * ✅ Guard contract initializers
   * 👉 Self-targeting state transitions
-* 👉 "How to" doc with demo as subject
-
+* Projects
+  * 👉 Small game utilizing [existing NFTs and lore](https://opensea.io/collection/alch)
+  * 👉 "How to" doc with game as subject
+  
 ##  [![Created by Futurescale](docs/images/created-by.png)](https://futurescale.com)

@@ -12,9 +12,9 @@ const ethers = hre.ethers;
  *
  * @author Cliff Hall <cliff@futurescale.com> (https://twitter.com/seaofarrows)
  */
-async function deployTokens(gasLimit) {
+async function deployTokens(tokens, gasLimit) {
 
-    const deployedTokens = [], tokens = ["Fismo20", "Fismo721", "Fismo1155"];
+    const deployedTokens = [];
 
     // Deploy all the tokens
     while (tokens.length) {
@@ -22,10 +22,10 @@ async function deployTokens(gasLimit) {
         let TokenContractFactory = await ethers.getContractFactory(token);
         const tokenContract = await TokenContractFactory.deploy({gasLimit});
         await tokenContract.deployed();
-        deployedTokens.push(tokenContract);
+        deployedTokens.push(tokenContract.address);
     }
 
-    // Return the deployed token contracts
+    // Return the deployed token contract addresses
     return deployedTokens;
 
 }

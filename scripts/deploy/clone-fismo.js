@@ -9,6 +9,7 @@ const {getEvent} = require("../util/tx-utils");
 const environments = require('../../environments');
 const gasLimit = environments.gasLimit;
 const chain = environments.network[network].chain;
+const myDeployments = environments.network[network].deployments;
 
 // Get the Fismo ABI from the SDK
 const FismoABI = require('fismo/sdk/fismo-abi.json');
@@ -22,15 +23,6 @@ const {Deployments} = require("fismo/sdk/node/");
  * @author Cliff Hall <cliff@futurescale.com> (https://twitter.com/seaofarrows)
  */
 async function main() {
-    
-    // Bail now if deploying locally
-    if (chain.name === 'hardhat') {
-        console.log(`❌  Cannot clone locally`);
-        process.exit();
-    } else if (!Deployments || !eip55.verify(Deployments[chain.name]?.Fismo)) {
-        console.log(`❌  No official deployments for chain ${chain.name}`);
-        process.exit();
-    }
 
     // Get accounts
     const accounts = await ethers.getSigners();
@@ -42,6 +34,21 @@ async function main() {
     console.log(`⛓ Network: ${network} (${chain.name})\n📅 ${new Date()}`);
     console.log("🔱 Owner account: ", owner ? owner.address : "not found" && process.exit() );
     console.log(divider);
+
+    // Bail now if deploying locally
+    if (chain.name === 'hardhat') {
+        console.log(`❌  Cannot clone locally`);
+        process.exit();
+    } else if (!Deployments || !eip55.verify(Deployments[chain.name]?.Fismo)) {
+        console.log(`❌  No official deployments for chain ${chain.name}`);
+        process.exit();
+    }
+
+    // Check if you already have a Fismo deployment and just report its address if present
+    if(eip55.verify(myDeployments?.Fismo)) {
+        console.log(`✋  You already have a Fismo clone at: ${myDeployments?.Fismo}`);
+        process.exit();
+    }
 
     // Get the official Fismo deployment address for this chain
     const fismoAddress = Deployments[chain.name]?.Fismo;

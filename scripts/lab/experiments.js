@@ -1,17 +1,31 @@
 /**
- * Machine definitions and example descriptors
+ * Machine definitions and Experiment descriptors.
+ *
+ * You can add your own Machines to this file and deploy them with the same apparatus.
  *
  * @author Cliff Hall <cliff@futurescale.com> (https://twitter.com/seaofarrows)
  */
 
+// Workaday imports
 const { nameToId } = require('fismo/sdk/node');
 
-//--------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 // Define Machines
-//--------------------------------------------------
+//
+// Plain object with the following properties:
+//
+// name            - machine name. begin with letter, no spaces, a-z, A-Z, 0-9, and _   (required)
+// initialStateId  - keccak256 hash of initial state name                               (required)
+// uri             - off-chain URI of metadata describing the machine                   (optional)
+// states          - an array of plain objects representing State entities              (required)
+//
+// Note: operator property of Machine is omitted, and will be replaced at deployment time with the address
+//
+// See Machine https://docs.fismo.xyz/domain/Machine.html
+//--------------------------------------------------------------------------------------------------------------------
 
+// NIGHTCLUB MACHINE - See /contracts/lab/NightClub
 const NightClubMachine = {
-  "operator": null,
   "name": "NightClub",
   "initialStateId": nameToId("Home"),
   "uri": "ipfs://",
@@ -179,8 +193,8 @@ const NightClubMachine = {
   ]
 };
 
+// STOPWATCH MACHINE - See /contracts/lab/NightClub
 const StopWatchMachine = {
-  "operator": null,
   "name": "StopWatch",
   "initialStateId":  nameToId("Ready"),
   "uri": "ipfs://",
@@ -225,8 +239,8 @@ const StopWatchMachine = {
   ]
 };
 
+// NIGHTCLUB MACHINE - See /contracts/lab/LockableDoor
 const LockableDoorMachine = {
-  "operator": null,
   "name": "LockableDoor",
   "initialStateId":  nameToId("Closed"),
   "uri": "ipfs://",
@@ -271,37 +285,59 @@ const LockableDoorMachine = {
   ]
 };
 
-//--------------------------------------------------
-// Export example descriptors
-//--------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
+// Export Experiment Descriptors
+//
+// Plain objects that have the following properties:
+//
+// machine     - a valid Machine entity description                       (required, defined above)
+// operator    - a deployable operator contract name                      (optional, or Operator will be cloned)
+// guards      - an array of plain objects with the following properties: (required)
+//               states       - an array of guarded state names           (required)
+//               contractName - the associated guard contract name        (required)
+// initializer - a plain object with the following properties:            (optional)
+//               contractName - the name of the contract to initialize    (required)
+//               signature    - the signature of the initializer method   (required)
+// tokens      - an array of token contract names to install              (optional)
+//--------------------------------------------------------------------------------------------------------------------
 
+// NIGHTCLUB MACHINE
+// FSM Models: A map with states representing locations and transitions as their interconnections
+// Experiment: Crawler with Transition-specific messages as narration and State-specific guard contracts
 exports.NightClub = {
     machine: NightClubMachine,
     operator: "NightClubOperator",
     guards: [
-      {states: ["Bar"], contractName: "BarGuards", contract: null},
-      {states: ["Cab"], contractName: "CabGuards", contract: null},
-      {states: ["Dancefloor"], contractName: "DancefloorGuards", contract: null},
-      {states: ["Foyer"], contractName: "FoyerGuards", contract: null},
-      {states: ["Restroom"], contractName: "RestroomGuards", contract: null},
-      {states: ["Street"], contractName: "StreetGuards", contract: null},
-      {states: ["VIP_Lounge"], contractName: "VIPLoungeGuards", contract: null},
+      {states: ["Bar"], contractName: "BarGuards"},
+      {states: ["Cab"], contractName: "CabGuards"},
+      {states: ["Dancefloor"], contractName: "DancefloorGuards"},
+      {states: ["Foyer"], contractName: "FoyerGuards"},
+      {states: ["Restroom"], contractName: "RestroomGuards"},
+      {states: ["Street"], contractName: "StreetGuards"},
+      {states: ["VIP_Lounge"], contractName: "VIPLoungeGuards"},
     ],
 };
 
+// STOPWATCH MACHINE
+// FSM Models: A stateful electronic device
+// Experiment: Machine-specific storage using the Diamond Storage pattern
+//             See https://dev.to/mudgen/how-diamond-storage-works-90e
 exports.StopWatch = {
   machine: StopWatchMachine,
   guards: [
     {
       states: ["Ready", "Running", "Paused"],
-      contractName: "StopWatchGuards",
-      contract: null
+      contractName: "StopWatchGuards"
     },
   ]
 };
 
+// LOCKABLE DOOR MACHINE
+// FSM Models: A stateful physical system
+// Experiment: Token-gated state transitions, custom initializer, Machine-specific storage
 exports.LockableDoor = {
   machine: LockableDoorMachine,
+  tokens:  ["Fismo20"],
   initializer: {
     contractName: "LockableDoorGuards",
     signature: "initialize(address)"
@@ -309,8 +345,7 @@ exports.LockableDoor = {
   guards: [
     {
       states: ["Locked"],
-      contractName: "LockableDoorGuards",
-      contract: null
+      contractName: "LockableDoorGuards"
     },
   ]
 };

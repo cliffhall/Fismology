@@ -40,7 +40,7 @@
     "deploy:labs:eth:main": "npx hardhat run --network eth-main scripts/deploy/deploy-and-verify-labs.js >> logs/deploy.labs.eth.main.txt"
   },
   "dependencies": {
-    "fismo": "^0.6.0"
+    "fismo": "^0.6.5"
   },
   "devDependencies": {
     "@openzeppelin/contracts": "^4.4.2",

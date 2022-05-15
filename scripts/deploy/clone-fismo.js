@@ -15,7 +15,7 @@ const myDeployments = environments.network[network].deployments;
 const FismoABI = require('fismo/sdk/fismo-abi.json');
 
 // Get the official deployments
-const {Deployments} = require("fismo/sdk/node/");
+const {Deployments:OfficialDeployments} = require("fismo/sdk/node/");
 
 /**
  * Clone Fismo from the official deployment for the given chain
@@ -39,26 +39,28 @@ async function main() {
     if (chain.name === 'hardhat') {
         console.log(`❌  Cannot clone locally`);
         process.exit();
-    } else if (!Deployments || !eip55.verify(Deployments[chain.name]?.Fismo)) {
+    } else if (!OfficialDeployments || !eip55.verify(OfficialDeployments[chain.name]?.Fismo)) {
         console.log(`❌  No official deployments for chain ${chain.name}`);
         process.exit();
     }
 
     // Check if you already have a Fismo deployment and just report its address if present
     if(eip55.verify(myDeployments?.Fismo)) {
-        console.log(`✋  You already have a Fismo clone at: ${myDeployments?.Fismo}`);
+        console.log(`✋ You already have a Fismo clone at: ${myDeployments?.Fismo}`);
         process.exit();
     }
 
     // Get the official Fismo deployment address for this chain
-    const fismoAddress = Deployments[chain.name]?.Fismo;
+    const fismoAddress = OfficialDeployments[chain.name]?.Fismo;
     const fismo = await hre.ethers.getContractAt(FismoABI.IFismoClone, fismoAddress);
 
     // Clone Fismo
     const tx = await fismo.connect(owner).cloneFismo();
     const txReceipt = await tx.wait();
     const event = getEvent(txReceipt, fismo, "FismoCloned");
-    console.log(`🧪 Your Fismo Clone: ${event.instance}`);
+    console.log(`🧪 Your new Fismo clone: ${event.instance}`);
+    console.log(`✋ Be sure to update environments.js`);
+    console.log(`➡️ Set network.${network}.deployments.Fismo to "${event.instance}"`);
     console.log("\n");
 }
 

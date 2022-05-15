@@ -22,6 +22,8 @@ interface KeyToken {
  */
 contract LockableDoorGuards is FismoConstants {
 
+    event LockableDoorInitialized(address keyToken);
+
     // -------------------------------------------------------------------------
     // MACHINE STORAGE
     // -------------------------------------------------------------------------
@@ -67,6 +69,9 @@ contract LockableDoorGuards is FismoConstants {
 
         // Initialize market config params
         lockableDoorSlot().keyToken = KeyToken(_keyToken);
+
+        // Notify listeners about state change
+        emit LockableDoorInitialized(_keyToken);
     }
 
     // -------------------------------------------------------------------------

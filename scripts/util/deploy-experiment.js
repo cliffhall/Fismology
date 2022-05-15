@@ -1,23 +1,53 @@
 const hre = require("hardhat");
 const ethers = hre.ethers;
+const network = hre.network.name;
 const eip55 = require("eip55");
 
 const { Machine } = require("fismo/sdk/node");
 const { deployTokens } = require('./deploy-tokens');
 const { deployTransitionGuards } = require('./deploy-guards');
 
+// Get the chain and personal deployments
+const environments = require("../../environments");
+const chain = environments.network[network].chain;
+const myDeployments = environments.network[network].deployments;
+
 // Get the official deployments
-const {Deployments} = require("fismo/sdk/node/");
+const {Deployments:OfficialDeployments} = require("fismo/sdk/node/");
 
 // Get the Fismo ABI from the SDK
 const FismoABI = require('fismo/sdk/fismo-abi.json');
 const {getEvent} = require("./tx-utils");
 
 /**
- * Install an experiment
+ * Deploy an experiment
  *
- * @param owner - the owner address
- * @param fismoAddress - the fismo contract address
+ * This script:
+ * - Expects you to have a Fismo instance configured for the target network
+ *   - You can clone an official Fismo deployment on supported networks with clone-fismo.js
+ *   - Then add the address of cloned Fismo instance to the appropriate location in environments.js
+ *
+ * - Will compile and deploy an explicitly defined experiment operator if the experiment has one
+ *   - Otherwise, will use your existing, configured Operator clone if found in environments.js
+ *   - Finally, if no existing Operator clone is found, it will clone the official Operator
+ *     - Then add the address of cloned Operator instance to the appropriate location in environments.js
+ *
+ * - Will compile and deploy all associated guard contracts.
+ *   - You can put all the code for a given machine in one contract if you like
+ *   - You can also have a separate contract for every guarded state of a machine
+ *   - Only one of those contracts can contain the initializer for the machine if you have one.
+ *
+ * - Installs the experiment's machine into your Fismo instance
+ *   - configured with the chosen operator and deployed guard addresses
+ *
+ * - If an initializer is defined for the experiment, it is called with custom argument data
+ *   - if the experiment lists one or more token contracts to deploy, it will deploy them first
+ *   - experiments that require token contracts expect the address(s) in their initializer args
+ *   - custom initializer calldata is created in the prepareInitializerArgs method below
+ *   - initializers allow you to set up and populate one or more custom storage slots for your machine
+ *   - machines can share custom storage slots so that data created in one machine is available to another
+ *
+ * @param owner - the signer instance for the owner
  * @param experiment - the experiment descriptor. See experiments.js for format.
  * @param gasLimit - gasLimit for transactions
  *
@@ -25,10 +55,7 @@ const {getEvent} = require("./tx-utils");
  *
  * @author Cliff Hall <cliff@futurescale.com> (https://twitter.com/seaofarrows)
  */
-async function installExperiment(owner, myDeployments, experiment, gasLimit) {
-
-    // Get owner's Fismo instance
-    const fismo = await ethers.getContractAt(FismoABI.IFismoUpdate, myDeployments?.Fismo);
+async function deployExperiment(owner, fismo, experiment, gasLimit) {
 
     // Create and validate the machine
     const machine = Machine.fromObject(experiment.machine);
@@ -36,7 +63,7 @@ async function installExperiment(owner, myDeployments, experiment, gasLimit) {
     // Deploy operator, guards, and add machine to Fismo
     if (machine.isValid()) {
 
-        const operatorArgs = [deployments?.Fismo];
+        const operatorArgs = [myDeployments?.Fismo];
         let operator, operatorAddress;
 
         // Deploy explicitly defined experiment operators
@@ -46,9 +73,6 @@ async function installExperiment(owner, myDeployments, experiment, gasLimit) {
             const Operator = await ethers.getContractFactory(experiment.operator);
             operator = await Operator.deploy(...operatorArgs, {gasLimit});
             await operator.deployed();
-
-            // Update machine with operator address
-            machine.operator = operator.address;
 
         // Or use owner's existing Operator instance if configured
         } else if (eip55.verify(myDeployments?.Operator)) {
@@ -61,22 +85,21 @@ async function installExperiment(owner, myDeployments, experiment, gasLimit) {
         } else {
 
             // Get the official Operator deployment address for this chain
-            operatorAddress = Deployments[chain.name]?.Operator;
+            operatorAddress = OfficialDeployments[chain.name]?.Operator;
             operator = await ethers.getContractAt(FismoABI.Operator, operatorAddress);
 
             // Clone Operator
-            const tx = await operator.connect(owner).cloneOperator(fismoAddress);
+            const tx = await operator.connect(owner).cloneOperator(fismo.address, {gasLimit});
             const txReceipt = await tx.wait();
             const event = getEvent(txReceipt, operator, "OperatorCloned");
-            //console.log(`🧪 Your Operator Clone: ${event.clone}`);
 
             // Now point to clone as operator
-            const operatorAddress = event.clone;
+            operatorAddress = event.clone;
             operator = await ethers.getContractAt(FismoABI.Operator, operatorAddress);
-
-            // Update machine with operator address
-            machine.operator = operator.address;
         }
+
+        // Update machine with operator address
+        machine.operator = operator.address;
 
         // Deploy transition guards
         const guards = await deployTransitionGuards(experiment, gasLimit);
@@ -89,7 +112,7 @@ async function installExperiment(owner, myDeployments, experiment, gasLimit) {
             })
         }
 
-        // If there is an initializer defined, deploy
+        // If there is an initializer defined
         let tokens = [];
         if (experiment.initializer) {
 
@@ -101,12 +124,12 @@ async function installExperiment(owner, myDeployments, experiment, gasLimit) {
             const initArgs = prepareInitializerArgs(experiment, guards, tokens);
 
             // Install and initialize the machine
-            await fismo.installAndInitializeMachine(machine.toObject(), ...initArgs);
+            await fismo.installAndInitializeMachine(machine.toObject(), ...initArgs, {gasLimit});
 
         } else {
 
             // Just install the machine
-            await fismo.installExperiment(machine.toObject());
+            await fismo.installMachine(machine.toObject(), {gasLimit});
 
         }
 
@@ -144,6 +167,7 @@ async function installExperiment(owner, myDeployments, experiment, gasLimit) {
 function prepareInitializerArgs(experiment, guards, tokens) {
 
     let initFunction, initInterface, initCallData, initializer;
+    let tokenAddresses = tokens && tokens.length ? tokens.map(token => token.contract.address) : [];
 
     switch (experiment.machine.name) {
 
@@ -155,7 +179,7 @@ function prepareInitializerArgs(experiment, guards, tokens) {
             // Prepare the calldata
             initFunction = "initialize(address payable)";
             initInterface = new ethers.utils.Interface([`function ${initFunction}`]);
-            initCallData = initInterface.encodeFunctionData("initialize", tokens);
+            initCallData = initInterface.encodeFunctionData("initialize", tokenAddresses);
             break;
 
         default:
@@ -166,5 +190,5 @@ function prepareInitializerArgs(experiment, guards, tokens) {
 
 }
 
-exports.deployExperiment = installExperiment;
+exports.deployExperiment = deployExperiment;
 exports.prepareInitializerArgs = prepareInitializerArgs;

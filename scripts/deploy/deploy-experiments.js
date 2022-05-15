@@ -6,7 +6,7 @@
 //--------------------------------------------------------------------------------------------------------------------
 const {LockableDoor} = require("../lab/experiments");
 const experiments = [LockableDoor];
-const verify = false;
+const verify = true;
 //const experiments = []; // remove me
 //--------------------------------------------------------------------------------------------------------------------
 
@@ -15,12 +15,12 @@ const hre = require("hardhat");
 const ethers = hre.ethers;
 const network = hre.network.name;
 const eip55 = require('eip55');
-const {installExperiment} = require("../util/install-experiment");
+const {deployExperiment} = require("../util/deploy-experiment");
 const {delay, deploymentComplete, verifyOnEtherscan} = require("../util/report-verify");
 
 // Environment config
 const environments = require('../../environments');
-const gasLimit = environments.gasLimit;
+const gasLimit = environments.network[network].gasLimit;
 const chain = environments.network[network].chain;
 const myDeployments = environments.network[network].deployments;
 
@@ -31,10 +31,10 @@ let contract, contracts = [];
 const FismoABI = require('fismo/sdk/fismo-abi.json');
 
 // Get the official deployments
-const {Deployments} = require("fismo/sdk/node/");
+const {Deployments:OfficialDeployments} = require("fismo/sdk/node/");
 
 /**
- * Clone Fismo from the official deployment for the given chain
+ * Deploy one or more experiments to your configured Fismo instance
  *
  * @author Cliff Hall <cliff@futurescale.com> (https://twitter.com/seaofarrows)
  */
@@ -51,29 +51,37 @@ async function main() {
     console.log("🔱 Owner account: ", owner ? owner.address : "not found" && process.exit() );
     console.log(divider);
 
+    // Get owner's Fismo instance
+    const fismo = await ethers.getContractAt(FismoABI.IFismoUpdate, myDeployments?.Fismo);
+
+    // Bail now if no Fismo
+    if (!fismo || !fismo?.address) {
+        console.log(`❌ You need to clone or deploy Fismo on ${chain.name} with clone-fismo.js`);
+        process.exit();
+    }
     // Bail now if no experiments configured above
-    if (experiments.length === 0) {
-        console.log(`❌  Configure experiments to install at the top of this script`);
+    else if (experiments.length === 0) {
+        console.log(`❌ Configure experiments to install at the top of this script`);
         process.exit();
     }
     // or if deploying locally
     else if (chain.name === 'hardhat') {
-        console.log(`❌  Cannot clone locally`);
+        console.log(`❌ Cannot clone locally`);
         process.exit();
     }
     // or if you have no Fismo deployments
-    else if (!Deployments) {
-        console.log(`❌  You have no Fismo/Operator deployments configured for chain ${chain.name}`);
+    else if (!OfficialDeployments) {
+        console.log(`❌ You have no Fismo/Operator deployments configured for chain ${chain.name}`);
         process.exit();
     }
     // or if there is no operator to clone and a custom one is not specified
-    else if (!eip55.verify(myDeployments?.Operator) && !eip55.verify(Deployments?.Operator)) {
-        console.log(`❌  You have no deployed operator and there is no official Operator to clone for chain ${chain.name}`);
+    else if (!eip55.verify(myDeployments?.Operator) && !eip55.verify(OfficialDeployments[chain.name]?.Operator)) {
+        console.log(`❌ You have no deployed operator and there is no official Operator to clone for chain ${chain.name}`);
         process.exit();
     }
     // or if you have no Fismo instance
     else if (!eip55.verify(myDeployments?.Fismo)) {
-        console.log(`❌  You must first clone or deploy Fismo to chain ${chain.name}`);
+        console.log(`❌ You must first clone or deploy Fismo to chain ${chain.name} using clone-fismo.js`);
         process.exit();
     }
 
@@ -82,17 +90,21 @@ async function main() {
 
     // Deploy experiments
     for (const experiment of experiments) {
-        console.log(`\n📦 EXPERIMENT: ${experiment.machine.name}`);
+        console.log(`\n📦 INSTALLING MACHINE: ${experiment.machine.name}`);
         try {
-            [operator, operatorArgs, guards, machine, tokens] = await installExperiment(owner.address, myDeployments, experiment, gasLimit);
-            console.log(`✅  ${machine.name} machine added to Fismo contract.`);
+            [operator, operatorArgs, guards, machine, tokens] = await deployExperiment(owner, fismo, experiment, gasLimit);
+            console.log(`✅ Machine installed on your Fismo contract: ${fismo.address}`);
             const usedExisting = (operator && operator.address === myDeployments?.Operator);
 
             // Report operator status
-            if (!usedExisting) {
+            if (!usedExisting && experiment.operator) {
                 deploymentComplete(experiment.operator, operator.address, operatorArgs, contracts);
+            } else if (usedExisting) {
+                console.log(`👉 Used existing Operator clone: ${operator.address}`);
             } else {
-                console.log(`👉 Your existing Operator used: ${operator.address}`);
+                console.log(`🧪 Your new Operator clone: ${operator.address}`);
+                console.log(`✋ Be sure to update environments.js`);
+                console.log(`➡️ Set network.${network}.deployments.Operator to "${operator.address}"`);
             }
 
             // Report guard deployment status
@@ -102,12 +114,12 @@ async function main() {
             tokens.forEach(token => deploymentComplete(token.contractName, token.contract.address, [], contracts));
 
         } catch (e) {
-            console.log(`❌  ${e}`);
+            console.log(`❌ ${e}`);
         }
     }
 
-    // Bail if not configured to verify on block explorer
-    if (!verify) process.exit();
+    // Bail if not configured to verify on block explorer or no contracts deployed
+    if (!verify || !contracts.length) process.exit();
 
     // Wait a minute after deployment completes and then verify contracts on etherscan/polgyonscan
     console.log('⏲ Pause one minute, allowing deployments to propagate to Etherscan backend...');

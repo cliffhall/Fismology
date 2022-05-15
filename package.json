@@ -32,12 +32,12 @@
     "clone:fismo:eth:test": "npx hardhat run --network eth-test scripts/deploy/clone-fismo.js >> logs/clone.eth.test.txt",
     "clone:fismo:eth:test-2": "npx hardhat run --network eth-test-2 scripts/deploy/clone-fismo.js >> logs/clone.eth.test.2.txt",
     "clone:fismo:eth:main": "npx hardhat run --network eth-main scripts/deploy/clone-fismo.js >> logs/clone.eth.main.txt",
-    "deploy:labs:local": "npx hardhat run --network hardhat scripts/deploy/deploy-and-verify-labs.js",
-    "deploy:labs:poly:test": "npx hardhat run --network poly-test scripts/deploy/deploy-and-verify-labs.js >> logs/deploy.labs.poly.test.txt",
-    "deploy:labs:poly:main": "npx hardhat run --network poly-main scripts/deploy/deploy-and-verify-labs.js >> logs/deploy.labs.poly.main.txt",
-    "deploy:labs:eth:test": "npx hardhat run --network eth-test scripts/deploy/deploy-and-verify-labs.js >> logs/deploy.labs.eth.test.txt",
-    "deploy:labs:eth:test-2": "npx hardhat run --network eth-test-2 scripts/deploy/deploy-and-verify-labs.js >> logs/deploy.labs.eth.test.2.txt",
-    "deploy:labs:eth:main": "npx hardhat run --network eth-main scripts/deploy/deploy-and-verify-labs.js >> logs/deploy.labs.eth.main.txt"
+    "deploy:labs:local": "npx hardhat run --network hardhat scripts/deploy/deploy-experiments.js",
+    "deploy:labs:poly:test": "npx hardhat run --network poly-test scripts/deploy/deploy-experiments.js >> logs/deploy.poly.test.txt",
+    "deploy:labs:poly:main": "npx hardhat run --network poly-main scripts/deploy/deploy-experiments.js >> logs/deploy.poly.main.txt",
+    "deploy:labs:eth:test": "npx hardhat run --network eth-test scripts/deploy/deploy-experiments.js >> logs/deploy.eth.test.txt",
+    "deploy:labs:eth:test-2": "npx hardhat run --network eth-test-2 scripts/deploy/deploy-experiments.js >> logs/deploy.eth.test.2.txt",
+    "deploy:labs:eth:main": "npx hardhat run --network eth-main scripts/deploy/deploy-experiments.js >> logs/deploy.eth.main.txt"
   },
   "dependencies": {
     "fismo": "^0.6.5"

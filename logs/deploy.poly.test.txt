@@ -1,0 +1,38 @@
+--------------------------------------------------------------------------------
+💥 Deploy Experiments
+--------------------------------------------------------------------------------
+⛓  Network: poly-test (mumbai)
+📅 Sun May 15 2022 19:23:16 GMT-0400 (Eastern Daylight Time)
+🔱 Owner account:  0xAc59a3da0E748b29e43FfaAEEa731E17250a4C47
+--------------------------------------------------------------------------------
+Nothing to compile
+
+📦 INSTALLING MACHINE: LockableDoor
+✅ Machine installed on your Fismo contract: 0x3d3618dD34c77c56D09F57F2Cb98eE0AA0719B4b
+🧪 Your new Operator clone: 0x9fd2610521AF0126D212b40F90720C6f80285A4b
+✋ Be sure to update environments.js
+➡️ Set network.poly-test.deployments.Operator to "0x9fd2610521AF0126D212b40F90720C6f80285A4b"
+✅  LockableDoorGuards deployed to: 0x3f0D8faCb355001e15614d185DFf18ACC43a20ea
+✅  Fismo20 deployed to: 0xfB438cf10b2E36185f21E599b2a3623c5EddBe10
+⏲ Pause one minute, allowing deployments to propagate to Etherscan backend...
+🔍 Verifying contracts on Etherscan...
+
+📋 Verifying LockableDoorGuards
+Nothing to compile
+Successfully submitted source code for contract
+contracts/lab/LockableDoor/LockableDoorGuards.sol:LockableDoorGuards at 0x3f0D8faCb355001e15614d185DFf18ACC43a20ea
+for verification on the block explorer. Waiting for verification result...
+
+❌ Failed to verify LockableDoorGuards on etherscan. The Etherscan API responded with a failure status.
+The verification may still succeed but should be checked manually.
+Reason: Already Verified
+
+📋 Verifying Fismo20
+Compiled 40 Solidity files successfully
+Successfully submitted source code for contract
+contracts/lab/Tokens/Fismo20.sol:Fismo20 at 0xfB438cf10b2E36185f21E599b2a3623c5EddBe10
+for verification on the block explorer. Waiting for verification result...
+
+❌ Failed to verify Fismo20 on etherscan. The Etherscan API responded with a failure status.
+The verification may still succeed but should be checked manually.
+Reason: Already Verified

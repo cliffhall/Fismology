@@ -1,8 +1,14 @@
 module.exports = {
 
+    // block_explorer
+    // - API key for verifying contracts with hardhat-etherscan
+    // - uncomment the one you will be using and comment the other
+    //
+    // coinmarketcap
+    // - api key for CoinMarketCap used with hardhat-gas-reporter
     "apiKey": {
-        "etherscan": "YOUR_POLYGONSCAN_API_KEY", // POLYGONSCAN
-//        "etherscan": "YOUR_ETHERSCAN_API_KEY",   // ETHERSCAN
+        "block_explorer": "YOUR_POLYGONSCAN_API_KEY", // POLYGONSCAN
+//        "block_explorer": "YOUR_ETHERSCAN_API_KEY", // ETHERSCAN
         "coinmarketcap": "YOUR_COINMARKETCAP_API_KEY"
     },
 

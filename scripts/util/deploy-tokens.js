@@ -22,10 +22,10 @@ async function deployTokens(tokens, gasLimit) {
         let TokenContractFactory = await ethers.getContractFactory(token);
         const tokenContract = await TokenContractFactory.deploy({gasLimit});
         await tokenContract.deployed();
-        deployedTokens.push(tokenContract.address);
+        deployedTokens.push({contract: tokenContract, contractName: token, address: tokenContract.address});
     }
 
-    // Return the deployed token contract addresses
+    // Return the deployed token contracts
     return deployedTokens;
 
 }

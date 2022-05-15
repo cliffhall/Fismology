@@ -2,8 +2,11 @@
 💥 Clone Fismo
 --------------------------------------------------------------------------------
 ⛓ Network: poly-test (mumbai)
-📅 Fri May 13 2022 21:35:17 GMT-0400 (Eastern Daylight Time)
+📅 Sun May 15 2022 19:22:26 GMT-0400 (Eastern Daylight Time)
 🔱 Owner account:  0xAc59a3da0E748b29e43FfaAEEa731E17250a4C47
 --------------------------------------------------------------------------------
-🧪 Your Fismo Clone: 0xed635A2d252797AaA36f1a0F1000d5c26387fDE8
+🧪 Your new Fismo clone: 0x3d3618dD34c77c56D09F57F2Cb98eE0AA0719B4b
+✋ Be sure to update environments.js
+➡️ Set network.poly-test.deployments.Fismo to "0x3d3618dD34c77c56D09F57F2Cb98eE0AA0719B4b"
+
 

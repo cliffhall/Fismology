@@ -55,7 +55,7 @@ async function main() {
     const fismo = await hre.ethers.getContractAt(FismoABI.IFismoClone, fismoAddress);
 
     // Clone Fismo
-    const tx = await fismo.connect(owner).cloneFismo();
+    const tx = await fismo.connect(owner).cloneFismo({gasLimit});
     const txReceipt = await tx.wait();
     const event = getEvent(txReceipt, fismo, "FismoCloned");
     console.log(`🧪 Your new Fismo clone: ${event.instance}`);

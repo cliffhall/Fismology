@@ -24,7 +24,7 @@
     <title>Lockable Door - Fismology</title>
 
 </head>
-<body class="disabledBg">
+<body class="pageBg">
 
     <!-- Metamask Onboarding -->
     <script src="../node_modules/@metamask/onboarding/dist/metamask-onboarding.bundle.js"></script>
@@ -33,19 +33,15 @@
     <script>
         let desiredChain = "80001";
         let onboarding, wallet, accounts, connected = false;
-        let connectButton, goButton, walletField;
+        let connectButton, goButton, walletField, stateField;
 
         const isCorrectNetwork = () => window.ethereum.networkVersion === desiredChain;
 
         const setReadyToGo = () => {
-            goButton.classList.remove('btn-secondary');
-            goButton.classList.add('btn-primary');
             goButton.disabled = false;
         }
 
         const clearReadyToGo = () => {
-            goButton.classList.remove('btn-primary');
-            goButton.classList.add('btn-secondary');
             goButton.disabled = true;
         }
 
@@ -89,14 +85,13 @@
             connected = true;
             onboarding.stopOnboarding();
             walletField.value = account;
-            connectButton.classList.remove('btn-primary');
-            goButton.classList.add('btn-secondary');
+            connectButton.onclick = null;
             connectButton.innerText = isCorrectNetwork() ? 'Wallet Connected' : 'Wrong Network';
             connectButton.disabled = isCorrectNetwork();
             reconcileConnection();
         }
 
-        const updateUI = () => {
+        const refresh = () => {
 
             if (!MetaMaskOnboarding.isMetaMaskInstalled()) {
 
@@ -115,23 +110,26 @@
             reconcileConnection();
         };
 
+        // Prepare environment once loaded
         window.addEventListener('DOMContentLoaded', () => {
 
             // Prepare MetaMask onboarding
             onboarding = new MetaMaskOnboarding();
 
-            //
-            window.ethereum.on('chainChanged', updateUI);
-            window.ethereum.on('networkChanged', updateUI);
+            // Refresh UI when network changes
+            window.ethereum.on('chainChanged', refresh);
+            window.ethereum.on('networkChanged', refresh);
 
             // Get handles to DOM elements
             connectButton = document.getElementById('connect');
             walletField = document.getElementById('wallet');
+            stateField = document.getElementById('state');
             goButton = document.getElementById('go');
 
-            updateUI();
+            refresh();
 
         });
+
     </script>
 
     <!-- Header & Navigation -->
@@ -143,10 +141,10 @@
             </a>
 
             <ul class="nav nav-pills">
-                <li class="nav-item"><a href="#diagram" class="nav-link">Diagram</a></li>
-                <li class="nav-item"><a href="#need-a-wallet" class="nav-link">Need a Wallet?</a></li>
+                <li class="nav-item"><a href="#diagram" class="nav-link link">Diagram</a></li>
+                <li class="nav-item"><a href="#need-a-wallet" class="nav-link link">Need a Wallet?</a></li>
                 <li class="nav-item">
-                    <button id="connect" type="button" class="btn btn-primary">Loading...</button>
+                    <button id="connect" type="button" disabled class="btn darkBg">Loading...</button>
                 </li>
             </ul>
         </header>
@@ -165,24 +163,25 @@
                 <p>
                 <ul class="bi bi-card-checklist">
                 <li>Connect your wallet to the <b>Polygon Mumbai Testnet</b> network.</li>
-                <li>Choose an action and Click <b>Let's Go!</b></li>
-                <li>View the cloned <a href="https://mumbai.polygonscan.com/address/0x3d3618dD34c77c56D09F57F2Cb98eE0AA0719B4b" target="_blank" rel="noopener noreferrer nofollow">Fismo</a> contract on PolygonScan.</li>
-                <li>View the <a href="https://mumbai.polygonscan.com/address/0x3f0D8faCb355001e15614d185DFf18ACC43a20ea#code" target="_blank" rel="noopener noreferrer nofollow">LockableDoorGuards</a> contract on PolygonScan.</li>
+                <li>Your current state in the machine will be shown.</li>
+                <li>Choose an action and click <b>Let's Go!</b></li>
+                <li>View the cloned <a href="https://mumbai.polygonscan.com/address/0x3d3618dD34c77c56D09F57F2Cb98eE0AA0719B4b" target="_blank" rel="noopener noreferrer nofollow" class="link">Fismo</a> contract on PolygonScan.</li>
+                <li>View the <a href="https://mumbai.polygonscan.com/address/0x3f0D8faCb355001e15614d185DFf18ACC43a20ea#code" target="_blank" rel="noopener noreferrer nofollow" class="link">LockableDoorGuards</a> contract on PolygonScan.</li>
                 </ul>
                 </p>
                 <form action="" method="post" class="d-grid gap-2 d-md-flex justify-content-md-start">
                     <div class="col-lg">
                         <div class="input-group mb-3">
                             <div class="input-group-text lightBg">Wallet&nbsp;</div>
-                            <input type="text" id="wallet" name="wallet" disabled class="form-control disabledBg address"/>
+                            <input type="text" id="wallet" name="wallet" disabled class="form-control address"/>
                         </div>
                         <div class="input-group mb-3">
                             <div class="input-group-text lightBg">State&nbsp;&nbsp;</div>
-                            <input type="text" id="state" name="state" disabled class="form-control disabledBg"/>
+                            <input type="text" id="state" name="state" disabled class="form-control"/>
                         </div>
                         <div class="input-group mb-3">
-                            <div class="input-group-text deepBg">Action</div>
-                            <select class="form-select lightBg" id="action" data-placeholder="Action">
+                            <div class="input-group-text darkBg">Action</div>
+                            <select class="form-select" id="action" data-placeholder="Action">
                                 <option></option>
                                 <option>Open</option>
                                 <option>Close</option>
@@ -191,7 +190,7 @@
                             </select>
                         </div>
                         <div class="d-flex flex-wrap justify-content-end">
-                            <button id="go" type="submit" disabled class="btn deepBg">Let's Go!</button>
+                            <button id="go" type="submit" disabled class="btn darkBg">Let's Go!</button>
                         </div>
                     </div>
                 </form>
@@ -243,7 +242,7 @@
                 <div class="feature col">
                     <h2>4. Get $MATIC</h2>
                     <p>You can get free  <b>Polygon Mumbai $MATIC</b> at the
-                        <a href="https://faucet.polygon.technology/" target="_blank" rel="noopener noreferrer nofollow">Polygon Faucet</a>
+                        <a href="https://faucet.polygon.technology/" target="_blank" rel="noopener noreferrer nofollow" class="link">Polygon Faucet</a>
                     </p>
                 </div>
             </div>
@@ -254,7 +253,7 @@
     </main>
 
     <!-- Footer -->
-    <nav class="navbar fixed-bottom navbar-light disabledBg">
+    <nav class="navbar fixed-bottom navbar-light pageBg">
         <div class="container justify-content-center">
             <a class="navbar-brand" href="https://futurescale.com" target="_blank" rel="noopener noreferrer nofollow">
                 <img src="images/created-by.png" height="38">

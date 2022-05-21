@@ -4,13 +4,15 @@
     top: 0;
     left: 0;
 }
-/* Machine background */
+/* Machine back
+ground */
 .machine {
     position: relative;
     top: 0;
     left: 0;
     width: 100%;
 }
+
 /* State overlay */
 .overlay {
     position: absolute;
@@ -18,21 +20,54 @@
     left: 0;
     width: 100%;
 }
+
 .hide {
     display: none;
 }
+
+.pageBg {
+    background-color: ghostwhite;
+    color: darkslateblue;
+}
+
 .disabledBg {
     background-color: ghostwhite;
     color: slateblue;
 }
+
 .lightBg {
     background-color: lavender;
     color: slateblue;
 }
-.deepBg {
+
+.darkBg {
     color: whitesmoke;
     background-color: mediumpurple;
 }
+
 .address {
     font-family: Courier;
+}
+
+input[type="text"]:disabled {
+    background-color: ghostwhite;
+    color: slateblue;
+}
+
+a, .link {
+    color: darkslateblue;
+}
+
+a:hover, .link:hover {
+    color: mediumpurple;
+}
+
+button:disabled {
+    color: darkslateblue;
+    background: ghostwhite;
+}
+
+button:hover {
+    color: lawngreen !important;
+    background: darkslateblue;
 }

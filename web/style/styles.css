@@ -1,0 +1,38 @@
+/* Visual display container */
+.visual {
+    position: relative;
+    top: 0;
+    left: 0;
+}
+/* Machine background */
+.machine {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+/* State overlay */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+.hide {
+    display: none;
+}
+.disabledBg {
+    background-color: ghostwhite;
+    color: slateblue;
+}
+.lightBg {
+    background-color: lavender;
+    color: slateblue;
+}
+.deepBg {
+    color: whitesmoke;
+    background-color: mediumpurple;
+}
+.address {
+    font-family: Courier;
+}

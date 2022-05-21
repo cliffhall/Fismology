@@ -22,7 +22,7 @@ ground */
 }
 
 .hide {
-    display: none;
+    display: none !important;
 }
 
 .pageBg {

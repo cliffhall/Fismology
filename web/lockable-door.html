@@ -3,10 +3,6 @@
     <!-- Fismo SDK -->
     <script src="../node_modules/fismo/sdk/browser/index.js"></script>
 
-    <!-- Bootstrap CSS
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-    -->
-
     <!-- Styles -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
@@ -33,7 +29,7 @@
     <script>
         let desiredChain = "80001";
         let onboarding, wallet, accounts, connected = false;
-        let connectButton, goButton, walletField, stateField;
+        let connectButton, goButton, walletField, stateField, inputForm;
 
         const isCorrectNetwork = () => window.ethereum.networkVersion === desiredChain;
 
@@ -58,6 +54,7 @@
 
         const setNeedsOnboarding = () => {
             connectButton.innerText = 'Install MetaMask';
+            connectButton.disabled = false;
             connectButton.onclick = () => {
                 onboarding.startOnboarding();
                 setOnboarding();
@@ -70,6 +67,7 @@
         }
 
         const setDisconnected = () => {
+            inputForm.classList.add('hide');
             connectButton.innerText = 'Connect Wallet';
             connectButton.disabled = false;
             connectButton.onclick = async () => {
@@ -84,11 +82,16 @@
             wallet = account;
             connected = true;
             onboarding.stopOnboarding();
+            inputForm.classList.remove('hide');
             walletField.value = account;
             connectButton.onclick = null;
-            connectButton.innerText = isCorrectNetwork() ? 'Wallet Connected' : 'Wrong Network';
-            connectButton.disabled = isCorrectNetwork();
-            reconcileConnection();
+            if (isCorrectNetwork()) {
+                connectButton.innerText = 'Wallet Connected';
+                connectButton.disabled = true;
+            } else {
+                connectButton.innerText = 'Wrong Network';
+                connectButton.disabled = false;
+            }
         }
 
         const refresh = () => {
@@ -107,7 +110,6 @@
 
             }
 
-            reconcileConnection();
         };
 
         // Prepare environment once loaded
@@ -125,6 +127,7 @@
             walletField = document.getElementById('wallet');
             stateField = document.getElementById('state');
             goButton = document.getElementById('go');
+            inputForm  = document.getElementById('inputForm');
 
             refresh();
 
@@ -169,7 +172,7 @@
                 <li>View the <a href="https://mumbai.polygonscan.com/address/0x3f0D8faCb355001e15614d185DFf18ACC43a20ea#code" target="_blank" rel="noopener noreferrer nofollow" class="link">LockableDoorGuards</a> contract on PolygonScan.</li>
                 </ul>
                 </p>
-                <form action="" method="post" class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <form action="" id="inputForm" method="post" class="d-grid gap-2 d-md-flex justify-content-md-start hide">
                     <div class="col-lg">
                         <div class="input-group mb-3">
                             <div class="input-group-text lightBg">Wallet&nbsp;</div>
@@ -215,7 +218,7 @@
             <img src="images/LockableDoorFSM.png" width="100%"/>
         </div>
 
-        <!-- Wallet Info -->
+        <!-- Need a Wallet? -->
         <div class="container px-4 py-5" id="need-a-wallet">
 
             <h1 class="display-4 fw-bold text-center">Need a Funded Wallet?</h1>
@@ -249,8 +252,6 @@
         </div>
 
     </div>
-
-    </main>
 
     <!-- Footer -->
     <nav class="navbar fixed-bottom navbar-light pageBg">

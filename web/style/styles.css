@@ -40,6 +40,7 @@ ground */
     color: slateblue;
 }
 
+
 .darkBg {
     color: whitesmoke;
     background-color: mediumpurple;
@@ -67,7 +68,13 @@ button:disabled {
     background: ghostwhite;
 }
 
+select:disabled {
+    color: slateblue;
+    background: ghostwhite !important;
+}
+
 button:hover {
     color: lawngreen !important;
     background: darkslateblue;
 }
+

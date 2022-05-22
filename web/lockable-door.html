@@ -1,8 +1,5 @@
 <html>
 <head>
-    <!-- Fismo SDK -->
-    <script src="../node_modules/fismo/sdk/browser/index.js"></script>
-
     <!-- Styles -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
@@ -12,6 +9,11 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fismo/sdk/browser/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
+
+    <!-- Metamask Onboarding -->
+    <script src="https://cdn.jsdelivr.net/npm/@metamask/onboarding/dist/metamask-onboarding.bundle.js"></script>
 
     <!-- Local Styles -->
     <link href="style/styles.css" rel="stylesheet">
@@ -22,35 +24,73 @@
 </head>
 <body class="pageBg">
 
-    <!-- Metamask Onboarding -->
-    <script src="../node_modules/@metamask/onboarding/dist/metamask-onboarding.bundle.js"></script>
-
     <!-- UI Wiring -->
     <script>
-        let desiredChain = "80001";
+
+        // ---- ---- ---- ---- ---- VARIABLES ---- ---- ---- ---- ----
+
+        let fismoABI, fismoView, operator, currentState;
+        let desiredChain = "80001"; // Polygon Mumbai Testnet
         let onboarding, wallet, accounts, connected = false;
         let connectButton, goButton, walletField, stateField, inputForm;
+        let lockedImg, openedImg, closedImg;
+        let machineId = Fismo.nameToId("LockableDoor");
+        let states = {
+            "Opened": Fismo.nameToId("Opened"),
+            "Closed": Fismo.nameToId("Closed"),
+            "Locked": Fismo.nameToId("Locked"),
+        }
+
+       // URL of the Polygon Mumbai block explorer
+        const explorer = "https://mumbai.polygonscan.com/address/";
+
+        // Clone of the official Fismo contract on Polygon Mumbai
+        // NOTE: Actions on this contract must be initiated by the Operator contract specified by the installed Machine
+        const fismoAddress = "0x3d3618dD34c77c56D09F57F2Cb98eE0AA0719B4b";
+
+        // Deployed instance of LockableDoorGuards contract
+        // NOTE: Transactions don't go to this contract. Fismo uses it as a logic implementation for transition guards
+        const guardAddress = "0x3f0D8faCb355001e15614d185DFf18ACC43a20ea";
+
+        // Clone of the official Operator contract on Polygon Mumbai
+        // NOTE: This is the contract specified by the installed Machine, that we use to invoke actions
+        const operatorAddress = "0x9fd2610521AF0126D212b40F90720C6f80285A4b";
+
+        // ---- ---- ---- ---- ---- FETCH CURRENT STATE  ---- ---- ---- ---- ----
+
+        const fetchCurrentState = async () => {
+
+            // Get current state from the fismo contract and marshal to entity
+            const response = await fismoView.methods.getUserState(accounts[0], machineId).call();
+            currentState = Fismo.State.fromStruct(response);
+
+            // Update UI
+            stateField.value = currentState.name;
+            switch (currentState.name) {
+                case "Closed":
+                    lockedImg.classList.add("hide");
+                    openedImg.classList.add("hide");
+                    closedImg.classList.remove("hide");
+                    break;
+
+                case "Locked":
+                    lockedImg.classList.remove("hide");
+                    openedImg.classList.add("hide");
+                    closedImg.classList.add("hide");
+                    break;
+
+                case "Opened":
+                    lockedImg.classList.add("hide");
+                    openedImg.classList.remove("hide");
+                    closedImg.classList.add("hide");
+                    break;
+            }
+            console.log('wwoot')
+        }
+
+        // ---- ---- ---- ---- ---- NETWORK CONNECTION ---- ---- ---- ---- ----
 
         const isCorrectNetwork = () => window.ethereum.networkVersion === desiredChain;
-
-        const setReadyToGo = () => {
-            goButton.disabled = false;
-        }
-
-        const clearReadyToGo = () => {
-            goButton.disabled = true;
-        }
-
-        const reconcileConnection = () => {
-            if (
-                connected &&
-                isCorrectNetwork()
-            ) {
-                setReadyToGo();
-            } else {
-                clearReadyToGo();
-            }
-        }
 
         const setNeedsOnboarding = () => {
             connectButton.innerText = 'Install MetaMask';
@@ -66,35 +106,57 @@
             connectButton.disabled = true;
         }
 
-        const setDisconnected = () => {
+        const setDisconnected = async () => {
             inputForm.classList.add('hide');
             connectButton.innerText = 'Connect Wallet';
             connectButton.disabled = false;
             connectButton.onclick = async () => {
-                accounts = await window.ethereum.enable();
-                if (accounts && accounts.length) {
-                    setConnected(accounts[0]);
+
+                // Is metamask available?
+                if (window.ethereum) {
+
+                    // Create web3 instance for transactions
+                    window.web3 = new Web3(window.ethereum);
+
+                    // Get operator contract
+                    operator = await new window.web3.eth.Contract(fismoABI.Operator, operatorAddress);
+
+                    // Get fismo contract, cast to IFismoView (for reading only)
+                    fismoView = await new window.web3.eth.Contract(fismoABI.IFismoView, fismoAddress);
+
+                    // Update UI when network changes
+                    window.ethereum.on('chainChanged', refreshNetworkStatus);
+                    window.ethereum.on('networkChanged', refreshNetworkStatus);
+
+                    // Get the accounts
+                    accounts = await window.ethereum.enable();
+                    if (accounts && accounts.length) {
+                        setConnected(accounts[0]);
+                    }
+
+                    await fetchCurrentState(wallet);
                 }
-            };
+            }
         }
 
         const setConnected = (account) => {
             wallet = account;
             connected = true;
             onboarding.stopOnboarding();
-            inputForm.classList.remove('hide');
             walletField.value = account;
             connectButton.onclick = null;
+            connectButton.disabled = true;
             if (isCorrectNetwork()) {
                 connectButton.innerText = 'Wallet Connected';
-                connectButton.disabled = true;
+                inputForm.classList.remove('hide');
             } else {
                 connectButton.innerText = 'Wrong Network';
-                connectButton.disabled = false;
+                inputForm.classList.add('hide');
             }
+
         }
 
-        const refresh = () => {
+        const refreshNetworkStatus = async () => {
 
             if (!MetaMaskOnboarding.isMetaMaskInstalled()) {
 
@@ -112,34 +174,52 @@
 
         };
 
+        // ---- ---- ---- ---- ---- DOM CONTENT LOADED  ---- ---- ---- ---- ----
+
         // Prepare environment once loaded
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
 
             // Prepare MetaMask onboarding
             onboarding = new MetaMaskOnboarding();
 
-            // Refresh UI when network changes
-            window.ethereum.on('chainChanged', refresh);
-            window.ethereum.on('networkChanged', refresh);
-
             // Get handles to DOM elements
             connectButton = document.getElementById('connect');
+            inputForm  = document.getElementById('inputForm');
             walletField = document.getElementById('wallet');
             stateField = document.getElementById('state');
             goButton = document.getElementById('go');
-            inputForm  = document.getElementById('inputForm');
 
-            refresh();
+            console.log("closed", closedImg)
+            console.log("inputForm", inputForm)
+
+            // Set Explorer links
+            document.getElementById('fismoLink').href = `${explorer}${fismoAddress}#code`;
+            document.getElementById('operatorLink').href = `${explorer}${operatorAddress}#code`;
+            document.getElementById('guardLink').href = `${explorer}${guardAddress}#code`;
+
+            // Get the Fismo ABI from the SDK
+            fetch("https://cdn.jsdelivr.net/npm/fismo/sdk/fismo-abi.json")
+                .then(response => {
+                    return response.text();
+                })
+                .then(async text => {
+                    // Parse the ABI into an object
+                    fismoABI = JSON.parse(text);
+
+                    // Update the UI with the network status
+                    await refreshNetworkStatus();
+
+                });
 
         });
 
     </script>
 
-    <!-- Header & Navigation -->
+    <!-- ---- ---- ---- ---- ---- HEADER & NAVIGATION ---- ---- ---- ---- ---- -->
     <div class="container">
         <header class="d-flex flex-wrap justify-content-center py-3 mb-4">
-            <a href="https://github.com/cliffhall/Fismology" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-                <svg class="bi me-2" width="40" height="32"><use xlink:href="#logo"/></svg>
+            <a href="https://github.com/cliffhall/Fismology"
+               class="d-flex align-items-center mb-3 mb-md-0 me-lg-auto">
                 <span class="fs-4"><img src="images/Fismology.png" height="50"></span>
             </a>
 
@@ -153,7 +233,7 @@
         </header>
     </div>
 
-    <!-- Content -->
+    <!-- ---- ---- ---- ---- ---- ---- CONTENT ---- ---- ---- ---- ---- ---- -->
     <div class="container col-xxl-8 px-4 py-5">
 
         <!-- Form and Machine -->
@@ -168,8 +248,12 @@
                 <li>Connect your wallet to the <b>Polygon Mumbai Testnet</b> network.</li>
                 <li>Your current state in the machine will be shown.</li>
                 <li>Choose an action and click <b>Let's Go!</b></li>
-                <li>View the cloned <a href="https://mumbai.polygonscan.com/address/0x3d3618dD34c77c56D09F57F2Cb98eE0AA0719B4b" target="_blank" rel="noopener noreferrer nofollow" class="link">Fismo</a> contract on PolygonScan.</li>
-                <li>View the <a href="https://mumbai.polygonscan.com/address/0x3f0D8faCb355001e15614d185DFf18ACC43a20ea#code" target="_blank" rel="noopener noreferrer nofollow" class="link">LockableDoorGuards</a> contract on PolygonScan.</li>
+                <li>View the cloned
+                    <a id="fismoLink" href="" target="_blank" rel="noopener noreferrer nofollow" class="link">Fismo</a>
+                    and
+                    <a id="operatorLink" href="" target="_blank" rel="noopener noreferrer nofollow" class="link">Operator</a> contracts.
+                </li>
+                <li>View the deployed <a id="guardLink" href="" target="_blank" rel="noopener noreferrer nofollow" class="link">LockableDoorGuards</a> logic contract.</li>
                 </ul>
                 </p>
                 <form action="" id="inputForm" method="post" class="d-grid gap-2 d-md-flex justify-content-md-start hide">
@@ -200,14 +284,20 @@
             </div>
 
             <!-- Machine -->
-            <div class="col-10 col-sm-8 col-lg-6">
+            <div class="col-lg-6">
 
                 <!-- Overlay -->
                 <div class="visual">
-                    <img class="machine" src="images/machine.png"/>
-                    <img id="state-Locked" name="state-Locked" class="overlay hide" src="images/LockableDoor/Locked.png" width="100%"/>
-                    <img id="state-Unlocked" name="state-Unlocked" class="overlay hide" src="images/LockableDoor/Unlocked.png" width="100%"/>
-                    <img id="state-Opened" name="state-Opened" class="overlay hide" src="images/LockableDoor/Opened.png" width="100%"/>
+                    <img id="machine" class="machine" src="images/machine.png"/>
+                    <img id="locked" class="overlay hide" src="images/LockableDoor/Locked.png"
+                         onload="lockedImg = document.getElementById('locked');"
+                         width="100%"/>
+                    <img id="closed"  class="overlay hide" src="images/LockableDoor/Unlocked.png"
+                         onload="closedImg = document.getElementById('closed');"
+                         width="100%"/>
+                    <img id="opened" class="overlay hide" src="images/LockableDoor/Opened.png"
+                         onload="openedImg = document.getElementById('opened');"
+                         width="100%"/>
                 </div>
             </div>
 
@@ -253,7 +343,7 @@
 
     </div>
 
-    <!-- Footer -->
+    <!-- ---- ---- ---- ---- ---- FOOTER ---- ---- ---- ---- ---- -->
     <nav class="navbar fixed-bottom navbar-light pageBg">
         <div class="container justify-content-center">
             <a class="navbar-brand" href="https://futurescale.com" target="_blank" rel="noopener noreferrer nofollow">
@@ -261,5 +351,6 @@
             </a>
         </div>
     </nav>
+
 </body>
 </html>

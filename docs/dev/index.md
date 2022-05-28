@@ -7,7 +7,7 @@ has_toc: false
 ---
 # Developers
 ##### Working in the Fismology Lab
-> Fismo is not your average protocol. It's straight-up weird. But so is protein folding, and that's why people show up to the lab every day to study it.
+> _Fismo is not your average protocol. It's straight-up weird. But so is protein folding, and that's why people show up to the lab every day to study it._
 
 There is no specific set of steps for integrating Fismo into your project. It could be the core component around which the whole architecture hangs. Or it could just model a minor stateful mechanism in a much larger ecosystem of contracts. 
 

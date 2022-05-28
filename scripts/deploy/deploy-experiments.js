@@ -7,7 +7,6 @@
 const {LockableDoor} = require("../lab/experiments");
 const experiments = [LockableDoor];
 const verify = true;
-//const experiments = []; // remove me
 //--------------------------------------------------------------------------------------------------------------------
 
 // Workaday imports
@@ -93,7 +92,7 @@ async function main() {
         console.log(`\n📦 INSTALLING MACHINE: ${experiment.machine.name}`);
         try {
             [operator, operatorArgs, guards, machine, tokens] = await deployExperiment(owner, fismo, experiment, gasLimit);
-            console.log(`✅ Machine installed on your Fismo contract: ${fismo.address}`);
+            console.log(`✅ Machine installed on your existing Fismo contract: ${fismo.address}`);
             const usedExisting = (operator && operator.address === myDeployments?.Operator);
 
             // Report operator status

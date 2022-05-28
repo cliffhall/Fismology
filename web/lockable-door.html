@@ -1,5 +1,6 @@
 <html>
 <head>
+
     <!-- Styles -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
@@ -18,7 +19,7 @@
     <!-- Local Styles -->
     <link href="style/styles.css" rel="stylesheet">
 
-    <!-- PAGE TITLE -->
+    <!-- Page Title -->
     <title>Lockable Door - Fismology</title>
 
 </head>
@@ -27,35 +28,115 @@
     <!-- UI Wiring -->
     <script>
 
-        // ---- ---- ---- ---- ---- VARIABLES ---- ---- ---- ---- ----
+        // ---- ---- ---- ----- ----- HOUSEKEEPING ----- ----- ---- ---- ----
 
-        let fismoABI, fismoView, operator, currentState, transitions, transition, opt, actionId;
+        let fismoABI, fismoView, operator, currentState, transitions, transition, opt, actionId, actionMsg;
+        let keyToken, keyTokenABI, hasKeyToken, keyField;
         let desiredChain = "80001"; // Polygon Mumbai Testnet
-        let confirmationThreshold = 3; // How many confirmations before assuming success
+        let confirmationThreshold = 2; // How many confirmations before assuming success
+        let tx, txHash, confirmations = 0, gasLimit = "2000000";
         let onboarding, wallet, accounts, connected = false;
-        let connectButton, goButton, walletField, stateField, inputForm, actionSelect;
+        let connectButton, goButton, keyButton, walletField, stateField, inputForm, actionSelect;
         let lockedImg, openedImg, closedImg, sendingImg, waitingImg;
-        let txHash, confirmations = 0;
         let machineId = Fismo.nameToId("LockableDoor");
 
-       // URL of the Polygon Mumbai block explorer
-        const explorer = "https://mumbai.polygonscan.com/address/";
+        // URL of the Polygon Mumbai block explorer
+        const explorer = "https://mumbai.polygonscan.com/";
 
         // Clone of the official Fismo contract on Polygon Mumbai
         // NOTE: Actions on this contract must be initiated by the Operator contract specified by the installed Machine
-        const fismoAddress = "0x3d3618dD34c77c56D09F57F2Cb98eE0AA0719B4b";
+        const fismoAddress = "0x0aD049ce599ca7c93c9301f13448a687c70D4D0C";
 
         // Deployed instance of LockableDoorGuards contract
         // NOTE: Transactions don't go to this contract. Fismo uses it as a logic implementation for transition guards
-        const guardAddress = "0x3f0D8faCb355001e15614d185DFf18ACC43a20ea";
+        const guardAddress = "0xc511b72E8EeE1eA587f2C201ecCCF1ce2b20f93f";
 
         // Clone of the official Operator contract on Polygon Mumbai
         // NOTE: This is the contract specified by the installed Machine, that we use to invoke actions
-        const operatorAddress = "0x9fd2610521AF0126D212b40F90720C6f80285A4b";
+        const operatorAddress = "0x26c7252Ea5cFedECcB53EF14D2D763ab6D611c03";
 
-        // ---- ---- ---- ---- ---- FETCH CURRENT STATE  ---- ---- ---- ---- ----
+        // Deployed instance of Fismo20 contract on Polygon Mumbai
+        // NOTE: This contract is used as the key token for unlocking the door
+        const keyTokenAddress = "0xF24355d530d029459AC30d63eF79d555F8b06e88";
 
-        const fetchCurrentState = async () => {
+        // Burn address for burning key token to
+        const zeroAddress = "0x000000000000000000000000000000000000dead";
+
+        // KeyToken (Fismo20) ABI
+        keyTokenABI = [
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "account",
+                        "type": "address"
+                    }
+                ],
+                "name": "balanceOf",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_owner",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "_amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "mintSample",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "to",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "transfer",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            }
+        ];
+
+        // ---- ---- ---- ---- --- FETCH CURRENT STATE  ---- ----- ---- ---- ----
+
+        function addActionSelectOption(value, label) {
+            opt = document.createElement('option');
+            opt.value = value;
+            opt.innerHTML = label;
+            actionSelect.appendChild(opt);
+        }
+
+        async function fetchCurrentState() {
 
             // Get user's current state from the fismo contract and marshal response into entity
             const response = await fismoView.methods.getUserState(accounts[0], machineId).call();
@@ -83,41 +164,56 @@
                     break;
             }
 
-            // Get the action select and remove current options
-            for (let i = actionSelect.options.length - 1; i > 0; i--) {
-                actionSelect.remove(i);
-            }
-
             // Get the valid transitions from this state
             transitions = currentState.transitions;
 
+            // Get the action select and remove current options
+            for (let i = actionSelect.options.length - 1; i >= 0; i--) {
+                actionSelect.remove(i);
+            }
+
+            // Add the prompt message to the select
+            actionMsg = `${(transitions.length > 0) ? "Choose an action" : "No available actions"}`
+            addActionSelectOption("", actionMsg);
+
             // Add the actions to the select
-            transitions.forEach(transition => {
-                opt = document.createElement('option');
-                opt.value = Fismo.nameToId(transition.action);
-                opt.innerHTML = transition.action;
-                actionSelect.appendChild(opt);
-            });
+            transitions.forEach(transition => addActionSelectOption(Fismo.nameToId(transition.action), transition.action));
 
             // Enable action selection
-            actionSelect.disabled = false;
+            actionSelect.disabled = (transitions.length === 0);
+
+            // Enable mint or burn button when in "Locked" state
+            if (currentState.name === "Locked") {
+                keyGroup.classList.remove("hide");
+                hasKeyToken = (transitions.length !== 0);
+                showKeyButton();
+            } else {
+                keyGroup.classList.add("hide");
+                hideKeyButton();
+            }
         }
 
-        // ---- ---- ---- ---- ------  ACTION CHOSEN  ------ ---- ---- ---- -----
+        // ---- ---- ---- ---- ---- HANDLE TRANSACTION  ---- ---- ---- ---- -----
 
-        const invokeAction = async () => {
+        function showTxLink() {
+            const txLink = document.getElementById('txLink');
+            txLink.href = `${explorer}/tx/${txHash}`;
+            txLink.classList.remove('hide');
+        }
 
-            actionSelect.disabled = true;
-            goButton.classList.add("hide");
-            sendingImg.classList.remove("hide");
+        function hideTxLink() {
+            const txLink = document.getElementById('txLink');
+            txLink.href = ``;
+            txLink.classList.add('hide');
+        }
 
-            // Invoke the action
-            operator.methods
-                .invokeAction(machineId, actionId)
-                .send({from: wallet})
+        async function handleTransaction(transaction) {
+            hideKeyButton();
+            transaction
                 .on('transactionHash', function(hash){
-                    txHash = hash; // TODO: prepare view transaction link
+                    txHash = hash;
                     confirmations = 0;
+                    showTxLink(txHash);
                 })
                 .on('confirmation', async function(confirmationNumber, receipt){
                     if (confirmationNumber === 1) {
@@ -127,26 +223,92 @@
                     if (++confirmations > confirmationThreshold) {
                         confirmations = 0;
                         waitingImg.classList.add("hide");
+                        hideTxLink();
                         await fetchCurrentState();
+                        transaction.off('confirmation');
                     }
                 })
-                .on('error', function(error, receipt) {
+                .on('error', async function(error, receipt) {
+                    confirmations = 0;
+                    sendingImg.classList.add("hide");
                     waitingImg.classList.add("hide");
-
+                    hideTxLink();
+                    await fetchCurrentState();
+                    transaction.off('confirmation');
                     console.log("transaction error:", error);
                 });
         }
 
-        const actionChosen = (selectedActionId) => {
+        // ---- ---- ---- ---- ----- MINT AND BURN KEY  ----- ---- ---- ---- -----
+
+        function onKeyRequest() {
+            actionSelect.disabled = true;
+            actionSelect.innerHTML = undefined;
+            goButton.classList.add("hide");
+            sendingImg.classList.remove("hide");
+            hideKeyButton();
+        }
+
+        async function mintRequested() {
+            // Mint the token
+            keyField.value = "Minting...";
+            hideKeyButton();
+            tx = keyToken.methods.mintSample(wallet, "1").send({from: wallet, gasLimit});
+            await handleTransaction(tx);
+        }
+
+        async function burnRequested() {
+            // Burn the token
+            keyField.value = "Burning...";
+            hideKeyButton();
+            tx = keyToken.methods.transfer(zeroAddress, "1").send({from: wallet, gasLimit});
+            await handleTransaction(tx);
+        }
+
+        function onKeyButtonClick() {
+
+            // Mint or burn token
+            if (hasKeyToken) {
+                burnRequested();
+            } else {
+                mintRequested();
+            }
+
+            // Update UI
+            onKeyRequest();
+
+        }
+
+        function hideKeyButton() {
+            keyButton.disabled = true;
+            keyButton.onclick = undefined;
+            keyButton.classList.add('hide');
+        }
+
+        function showKeyButton() {
+            keyField.value = `${hasKeyToken ? "Holding" : "Not holding"}`;
+            keyButton.innerHTML = `${hasKeyToken ? "Burn" : "Mint"} Key Token`;
+            keyButton.classList.remove('hide');
+            keyButton.disabled = false;
+            keyButton.onclick = onKeyButtonClick;
+        }
+
+        // ---- ---- -----  ACTION CHOSEN / INVOKE ACTION ------ ----- ---- -----
+
+        function actionChosen(selectedActionId) {
+
+            // Remember the action id
             actionId = selectedActionId;
 
             // Manage Go button
             if (actionId === "") {
+                if (hasKeyToken) showKeyButton();
                 goButton.classList.add('hide');
                 goButton.disabled = true;
-                goButton.onclick = null;
+                goButton.onclick = undefined;
                 actionSelect.disabled = false;
             } else {
+                hideKeyButton();
                 goButton.classList.remove('hide');
                 goButton.disabled = false;
                 goButton.onclick = invokeAction;
@@ -154,11 +316,25 @@
 
         }
 
+        function invokeAction() {
+
+            // Update UI
+            actionSelect.disabled = true;
+            goButton.classList.add("hide");
+            sendingImg.classList.remove("hide");
+
+            // Invoke the action
+            tx = operator.methods.invokeAction(machineId, actionId).send({from: wallet, gasLimit});
+            handleTransaction(tx);
+        }
+
         // ---- ---- ---- ---- ----  NETWORK CONNECTION  ---- ---- ---- ---- ----
 
-        const isCorrectNetwork = () => window.ethereum.networkVersion === desiredChain;
+        function isCorrectNetwork() {
+            return window.ethereum.networkVersion === desiredChain;
+        }
 
-        const setNeedsOnboarding = () => {
+        function setNeedsOnboarding() {
             connectButton.innerText = 'Install MetaMask';
             connectButton.disabled = false;
             connectButton.onclick = () => {
@@ -167,45 +343,52 @@
             };
         }
 
-        const setOnboarding = () => {
+        function setOnboarding() {
             connectButton.innerText = 'Onboarding in progress';
             connectButton.disabled = true;
         }
 
-        const setDisconnected = async () => {
+        async function onConnectButtonClick() {
+
+            // Is metamask available?
+            if (window.ethereum) {
+
+                // Create web3 instance for transactions
+                window.web3 = new Web3(window.ethereum);
+
+                // Get operator contract
+                operator = await new window.web3.eth.Contract(fismoABI.Operator, operatorAddress);
+
+                // Get fismo contract, cast to IFismoView (for reading only)
+                fismoView = await new window.web3.eth.Contract(fismoABI.IFismoView, fismoAddress);
+
+                // Get key token contract
+                keyToken = await new window.web3.eth.Contract(keyTokenABI, keyTokenAddress);
+
+                // Update UI when network changes
+                window.ethereum.on('chainChanged', refreshNetworkStatus);
+                window.ethereum.on('networkChanged', refreshNetworkStatus);
+
+                // Get the accounts
+                accounts = await window.ethereum.enable();
+                if (accounts && accounts.length) {
+                    setConnected(accounts[0]);
+                }
+
+                // Get the current state
+                await fetchCurrentState();
+            }
+
+        }
+
+        async function setDisconnected() {
             inputForm.classList.add('hide');
             connectButton.innerText = 'Connect Wallet';
             connectButton.disabled = false;
-            connectButton.onclick = async () => {
-
-                // Is metamask available?
-                if (window.ethereum) {
-
-                    // Create web3 instance for transactions
-                    window.web3 = new Web3(window.ethereum);
-
-                    // Get operator contract
-                    operator = await new window.web3.eth.Contract(fismoABI.Operator, operatorAddress);
-
-                    // Get fismo contract, cast to IFismoView (for reading only)
-                    fismoView = await new window.web3.eth.Contract(fismoABI.IFismoView, fismoAddress);
-
-                    // Update UI when network changes
-                    window.ethereum.on('chainChanged', refreshNetworkStatus);
-                    window.ethereum.on('networkChanged', refreshNetworkStatus);
-
-                    // Get the accounts
-                    accounts = await window.ethereum.enable();
-                    if (accounts && accounts.length) {
-                        setConnected(accounts[0]);
-                    }
-
-                    await fetchCurrentState(wallet);
-                }
-            }
+            connectButton.onclick = onConnectButtonClick;
         }
 
-        const setConnected = (account) => {
+        function setConnected(account) {
             wallet = account;
             connected = true;
             onboarding.stopOnboarding();
@@ -222,7 +405,7 @@
 
         }
 
-        const refreshNetworkStatus = async () => {
+        async function refreshNetworkStatus() {
 
             if (!MetaMaskOnboarding.isMetaMaskInstalled()) {
 
@@ -240,10 +423,9 @@
 
         };
 
-        // ---- ---- ---- ---- ---- DOM CONTENT LOADED  ---- ---- ---- ---- ----
+        // ---- ---- ---- ---- ----- BOOTSTRAPPING  ---- ---- ---- ---- -----
 
-        // Prepare environment once loaded
-        window.addEventListener('DOMContentLoaded', async () => {
+        async function onDomContendLoaded() {
 
             // Prepare MetaMask onboarding
             onboarding = new MetaMaskOnboarding();
@@ -254,12 +436,16 @@
             inputForm  = document.getElementById('inputForm');
             walletField = document.getElementById('wallet');
             stateField = document.getElementById('state');
+            keyButton = document.getElementById('mint');
+            keyGroup = document.getElementById('keyGroup');
+            keyField = document.getElementById('key');
             goButton = document.getElementById('go');
 
             // Set Explorer links
-            document.getElementById('fismoLink').href = `${explorer}${fismoAddress}#code`;
-            document.getElementById('operatorLink').href = `${explorer}${operatorAddress}#code`;
-            document.getElementById('guardLink').href = `${explorer}${guardAddress}#code`;
+            document.getElementById('fismoLink').href = `${explorer}/address/${fismoAddress}#code`;
+            document.getElementById('operatorLink').href = `${explorer}/address/${operatorAddress}#code`;
+            document.getElementById('guardLink').href = `${explorer}/address/${guardAddress}#code`;
+            document.getElementById('keyTokenLink').href = `${explorer}/address/${keyTokenAddress}#code`;
 
             // Add action select listener
             actionSelect.addEventListener('change', (event) => {
@@ -278,7 +464,9 @@
                     // Update the UI with the network status
                     await refreshNetworkStatus();
                 });
-        });
+        };
+
+        window.addEventListener('DOMContentLoaded', onDomContendLoaded);
 
     </script>
 
@@ -310,19 +498,25 @@
             <div class="col-lg-6">
 
                 <!-- Form Header -->
-                <h1 class="display-5 fw-bold lh-1 mb-3">Lockable Door Machine</h1>
+                <h1 class="display-5 fw-bold lh-1 mb-3">Lockable Door</h1>
                 <b>Interact with a Fismo Machine installed on a public blockchain.</b>
+                <br/>
+                <br/>
                 <div class="col-lg">
                     <ul >
                     <li>Connect your wallet to the <b>Polygon Mumbai Testnet</b> network.</li>
                     <li>Your current state in the machine will be shown.</li>
                     <li>Choose an action and click <b>Let's Go!</b></li>
-                    <li>View the cloned
+                    <li>View cloned
                         <a id="fismoLink" href="" target="_blank" rel="noopener noreferrer nofollow" class="link">Fismo</a>
                         and
-                        <a id="operatorLink" href="" target="_blank" rel="noopener noreferrer nofollow" class="link">Operator</a> contracts.
+                        <a id="operatorLink" href="" target="_blank" rel="noopener noreferrer nofollow" class="link">Operator</a>.
                     </li>
-                    <li>View the deployed <a id="guardLink" href="" target="_blank" rel="noopener noreferrer nofollow" class="link">LockableDoorGuards</a> logic contract.</li>
+                        <li>View
+                            <a id="guardLink" href="" target="_blank" rel="noopener noreferrer nofollow" class="link">LockableDoorGuards</a> logic
+                            and
+                            <a id="keyTokenLink" href="" target="_blank" rel="noopener noreferrer nofollow" class="link">Fismo20</a> key token.
+                        </li>
                     </ul>
                 </div>
 
@@ -342,29 +536,41 @@
                             <input type="text" id="state" name="state" disabled class="form-control"/>
                         </div>
 
+                        <!-- Key Field-->
+                        <div id="keyGroup" class="input-group mb-3 hide">
+                            <div class="input-group-text lightBg">Key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                            <input type="text" id="key" name="key" disabled class="form-control"/>
+                        </div>
+
                         <!-- Action Select -->
                         <div class="input-group mb-3">
-                            <div class="input-group-text darkBg">Action</div>
+                            <div class="input-group-text lightBg">Action</div>
                             <select id="actions" class="form-select">
-                                <option value="">Choose an Action</option>
                             </select>
                         </div>
 
                         <!-- Go Button / Spinners -->
-                        <div class="d-flex flex-wrap justify-content-end">
+                        <div class="d-flex flex-wrap justify-content-end align-items-center">
+
+                            <!-- View Tx Link -->
+                            <div><a id="txLink" href="" class="control hide" target="_blank" rel="noopener noreferrer nofollow" class="link">View Tx</a>&nbsp;&nbsp;</div>
+
+                            <!-- Mint Button -->
+                            <button id="mint" disabled class="control btn darkBg hide">Mint a Key Token</button>
 
                             <!-- Go Button -->
-                            <button id="go" disabled class="btn darkBg hide">Let's Go!</button>
+                            <button id="go" disabled class="control btn darkBg hide">Let's Go!</button>
 
                             <!-- Sending Spinner -->
-                            <img id="sending" class="hide" src="images/sending.gif"
+                            <img id="sending" class="control hide" src="images/sending.gif"
                                  onload="sendingImg = document.getElementById('sending')"
                                  width="38" height="38"/>
 
                             <!-- Waiting Spinner -->
-                            <img id="waiting" class="hide" src="images/waiting.gif"
+                            <img id="waiting" class="control hide" src="images/waiting.gif"
                                  onload="waitingImg = document.getElementById('waiting')"
                                  width="38" height="38"/>
+
                         </div>
 
                     </div>
@@ -419,7 +625,7 @@
                 <div class="feature col">
                     <h2>2. Configure</h2>
                     <p>Configure MetaMask for the <b>Polygon Mumbai Testnet</b> network.</p>
-                    <p>In order to view the assets in your account on the <b>Polygon Mumbai Testnet</b> network, you may need to configure Matic’s URL on Metamask.</p>
+                    <p>In order to view the assets in your account on the <b>Polygon Mumbai Testnet</b> network, you may need to configure the URL on Metamask.</p>
                 </div>
                 <div class="feature col">
                     <h2>3. Connect</h2>

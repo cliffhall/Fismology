@@ -67,7 +67,7 @@ contract LockableDoorGuards is FismoConstants {
         // Note: specifically testing a revert with a reason here
         requireContractCode(_keyToken, CODELESS_INITIALIZER);
 
-        // Initialize market config params
+        // Initialize key token
         lockableDoorSlot().keyToken = KeyToken(_keyToken);
 
         // Notify listeners about state change

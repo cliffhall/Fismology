@@ -1,5 +1,5 @@
 remote_theme: just-the-docs/just-the-docs
-logo: "images/fismo-logo.png"
+logo: "images/Fismology.png"
 aux_links:
   "NPM":
     - "//www.npmjs.com/package/fismo"

@@ -8,7 +8,7 @@ Fismo, waiting patiently for you to install your machine. It was created in coll
 ## 📖 [SDK Documentation](https://docs.fismo.xyz/dev/sdk.html)
 ## 🗄 [Fismo Protocol Source](https://github.com/cliffhall/Fismo)
 ## 📋 Status
-### [![Node.js CI](https://github.com/cliffhall/Fismo/actions/workflows/node.js.yml/badge.svg)](https://github.com/cliffhall/Fismo/actions/workflows/node.js.yml) 🔬 ![57%](https://progress-bar.dev/57/?title=Progress&width=100&color=0c0c0c)
+### [![Node.js CI](https://github.com/cliffhall/Fismo/actions/workflows/node.js.yml/badge.svg)](https://github.com/cliffhall/Fismo/actions/workflows/node.js.yml) 🔬 ![67%](https://progress-bar.dev/67/?title=Progress&width=100&color=0c0c0c)
 
 Done or in progress are:
 * ✅ Project structure
@@ -20,8 +20,8 @@ Done or in progress are:
   * 👉 Add new states and transitions to installed machines
 * Write HTML/JS
   * ✅ Prove self-validating entities are present and usable
-  * 👉 Invoke actions on machines
-  * 👉 Query a user's current state, last position, and position history
+  * ✅ Invoke actions on machines
+  * ✅ Query a user's current state, last position, and position history
 * Lab experiment topics
   * ✅ Token-gated state transitions
   * ✅ Machine-specific storage slots
@@ -29,6 +29,6 @@ Done or in progress are:
   * 👉 Self-targeting state transitions
 * Projects
   * 👉 Small game utilizing [existing NFTs and lore](https://opensea.io/collection/alch)
-  * 👉 "How to" doc with game as subject
+  * 👉 "How to" doc
   
 ##  [![Created by Futurescale](docs/images/created-by.png)](https://futurescale.com)

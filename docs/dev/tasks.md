@@ -5,7 +5,7 @@ title: Development Tasks
 nav_order: 3
 ---
 # Development Tasks
-_Only applicable if working on, testing, or auditing Fismo. If you just want to build cool stuff, you probably want the [SDK](sdk.md)._
+_Only applicable if experimenting with building cool stuff using the Fismo SDK. If you want to directly work on, test, or audit the Fismo protocol, you should visit the [Fismo Repo](https://github.com/cliffhall/Fismo)._
 
 ## NPM Scripts
 Everything required to build, test, analyse, and deploy is available as an NPM script.
@@ -14,48 +14,58 @@ Everything required to build, test, analyse, and deploy is available as an NPM s
 tasks with a double-click.
 * If you don't have an NPM launch window, you can run them from the command line.
 
-### Build the contracts
-This creates the build artifacts for deployment or testing.
+### Build Contracts
+This script creates the build artifacts for everything in the contracts folder. To create your own experiment, just add a new folder under `contracts/lab` with your guard and any other necessary smart contract code.
 
 * ```npm run build:contracts```
 
-### Test the contracts
-This builds the contracts and runs the unit tests.
+### Clone Fismo
+Deployment is expensive, cloning is cheap.
 
-* ```npm run test```
+The script `scripts/deploy/clone-fismo.js` creates a clone of the official Fismo deployment (found in the SDK) for the specified network.
 
-### Lint the contracts
-This runs the solhint linter against the contracts.
+#### Polygon Mumbai Testnet
+* ```npm run clone:fismo:poly:test```
 
-* ```npm run lint```
+#### Polygon Matic Mainnet
+* ```npm run clone:fismo:poly:main```
 
-### Size the contracts
-This runs the hardhat contract sizer against the contracts to display compiled sizes.
+#### Ethereum Rinkeby Testnet
+* ```npm run clone:fismo:eth:test```
 
-* ```npm run size```
+#### Ethereum Ropsten Testnet
+* ```npm run clone:fismo:eth:test-2```
 
-### Deploy to local Hardhat network
-This runs the `scripts/deploy/deploy-and-verify.js` script the against local hardhat network.
-Mainly used to test the deployment script.
+#### Ethereum Homsstead Mainnet
+* ```npm run clone:fismo:eth:main```
 
-* ```npm run deploy:local```
+### Deploy Lab Experiments
+Once you have a Fismo clone and have an experiment built, the script `scripts/deploy/deploy-experiments.js` can be used to deploy experiments on the specified network.
 
-### Deploy to Polygon Mumbai Testnet
-This runs the `scripts/deploy/deploy-and-verify.js` script against Polygon testnet.
+* You describe experiments in `scripts/lab/experiments.js` and edit the list at the top of the deploy script to include only those experiments you wish to deploy.
 
-* ```npm run deploy:poly:test```
+* You must have configured the address of your Fismo clone in your `environments.js` file under the `deployments` node for the given network.
 
-### Deploy to Polygon Mainnet
-This runs the `scripts/deploy/deploy-and-verify.js` script against Polygon mainnet.
+* If you have also defined an operator contract address in your `environments.js` file, it will be used as the operator for the deployed experiments. 
 
-* ```npm run deploy:poly:main```
+* Otherwise, it will clone a the official Operator instance and use that address. The log output will have the address of your new Operator, which you should add to your `environments.js` file for reuse on future deployments.
 
-### Deploy to Ethereum Rinkeby Testnet
-This runs the `scripts/deploy/deploy-and-verify.js` script against Ethereum mainnet.
+* Study the LockedDoor experiment for how initialization of an installed machine is done, should you need it.
 
-* ```npm run deploy:eth:test```
+#### Polygon Mumbai Testnet
+* ```npm run deploy:labs:poly:test```
 
-### Deploy to Ethereum Mainnet
-This runs the `scripts/deploy/deploy-and-verify.js` script against Ethereum mainnet.
+#### Polygon Matic Mainnet
 
-* ```npm run deploy:eth:main```
+* ```npm run deploy:labs:poly:main```
+
+#### Ethereum Rinkeby Testnet
+* ```npm run deploy:labs:eth:test```
+
+#### Ethereum Ropsten Testnet
+* ```npm run deploy:labs:eth:test-2```
+
+#### Ethereum Homsstead Mainnet
+* ```npm run deploy:labs:eth:main```
+
+

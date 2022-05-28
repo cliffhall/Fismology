@@ -5,7 +5,7 @@ title: Environment Setup
 nav_order: 2
 ---
 # Environment Setup
-_Only necessary if working on, testing, or auditing Fismo. If you just want to build cool stuff, you probably want the [SDK](sdk.md)._
+_Only applicable if experimenting with building cool stuff using the Fismo SDK. If you want to directly work on, test, or audit the Fismo protocol, you should visit the [Fismo Repo](https://github.com/cliffhall/Fismo)._
 
 ### Stack
 For the Fismology project, the stack is a simple one:
@@ -15,12 +15,12 @@ For the Fismology project, the stack is a simple one:
 * HardHat
 * Ethers
 
-### Download or clone the Fismo repository
-* [Download a zip file](https://github.com/cliffhall/Fismo/archive/refs/heads/main.zip) of the head of branch `main`.
+### Download or clone the Fismology repository
+* [Download a zip file](https://github.com/cliffhall/Fismology/archive/refs/heads/main.zip) of the head of branch `main`.
 * Or clone the repo using `git`:
 
 ```shell
-git clone https://github.com/cliffhall/Fismo.git
+git clone https://github.com/cliffhall/Fismology.git
 ```
 
 ### Install Node (also installs NPM)
@@ -30,7 +30,7 @@ git clone https://github.com/cliffhall/Fismo.git
 * All NPM modules are project local. No global installs required.
 
 ```shell
-cd path/to/fismo
+cd path/to/Fismology
 npm install
 ```
 
@@ -40,7 +40,8 @@ npm install
 - `environments.js` is included in `.gitignore` and will not be committed to the repo.
 - For your target Ethereum network environment, set:
     * `txNode`: the endpoint for sending ethereum transactions
-    * `mnemonic`: a valid ethereum HD wallet seed phrase
+    * `mnemonic`: a valid ethereum HD wallet seed phrase (first wallet is used as deployer)
+    * `deployments.Fismo`: your clone of the official Fismo deployment
+    * `deployments.Operator`: your clone of the official Fismo deployment
 - For verifying code and running the gas reporter, set:
-    * `etherscan.apiKey`: your etherscan API key
-    * `coinmarketcap.apiKey`: your coinmarketcap API key
+    * `apiKey.block_explorer`: your etherscan/poloygonscan/etc API key

@@ -1,6 +1,6 @@
 {
-  "name": "fismology",
-  "version": "0.1.0",
+  "name": "Fismology",
+  "version": "0.1.1",
   "description": "Building with the Fismo SDK",
   "author": "Cliff Hall <cliff@futurescale.com> (https://twitter.com/seaofarrows)",
   "license": "BSD-3-Clause",
@@ -24,9 +24,6 @@
   ],
   "scripts": {
     "build:contracts": "npx hardhat compile",
-    "test": "npx hardhat test",
-    "lint": "solhint 'contracts/**/*.sol'",
-    "size": "npx hardhat size-contracts",
     "clone:fismo:poly:test": "npx hardhat run --network poly-test scripts/deploy/clone-fismo.js >> logs/clone.poly.test.txt",
     "clone:fismo:poly:main": "npx hardhat run --network poly-main scripts/deploy/clone-fismo.js >> logs/clone.poly.main.txt",
     "clone:fismo:eth:test": "npx hardhat run --network eth-test scripts/deploy/clone-fismo.js >> logs/clone.eth.test.txt",
@@ -46,18 +43,9 @@
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.4",
     "@nomiclabs/hardhat-etherscan": "^3.0.0",
-    "@nomiclabs/hardhat-waffle": "^2.0.2",
     "@openzeppelin/contracts": "^4.4.2",
-    "chai": "^4.2.0",
     "eip55": "^2.1.0",
-    "ethereum-waffle": "^3.4.0",
     "ethers": "^5.5.3",
-    "hardhat": "^2.8.3",
-    "hardhat-contract-sizer": "^2.4.0",
-    "hardhat-gas-reporter": "^1.0.7",
-    "solhint": "^3.3.6",
-    "solidity-coverage": "^0.7.18",
-    "webpack": "^4.46.0",
-    "webpack-cli": "^4.9.2"
+    "hardhat": "^2.8.3"
   }
 }

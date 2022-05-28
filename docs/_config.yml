@@ -1,0 +1,7 @@
+remote_theme: just-the-docs/just-the-docs
+logo: "images/fismo-logo.png"
+aux_links:
+  "NPM":
+    - "//www.npmjs.com/package/fismo"
+  "GitHub":
+    - "//github.com/cliffhall/Fismology"

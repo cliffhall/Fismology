@@ -14,7 +14,7 @@ There is no specific set of steps for integrating Fismo into your project. It co
 The Fismology Lab has been established as a place where we can explore the possibilities, create some useful tools, and realize Fismo's potential together.
 
 #### Lab Experiments
-  * 🧪 Locked Door Machine - [Try it now!](experiment/lockable-door.html)
+  * 🧪 Lockable Door Machine - [Try it now!](experiment/lockable-door.html)
     * ✅ Token-gated state transition
     * ✅ Machine-specific storage slots
     * ✅ Guard contract initializers

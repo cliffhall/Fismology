@@ -16,8 +16,8 @@ The Fismology Lab has been established as a place where we can explore the possi
 #### Lab Experiments
   * 🧪 Lockable Door Machine - [Try it now!](experiment/lockable-door.html)
     * ✅ Token-gated state transition
-    * ✅ Machine-specific storage slots
-    * ✅ Guard contract initializers
+    * ✅ Machine-specific storage slot
+    * ✅ Guard contract initializer
     * ✅ Contextually suppressed actions
 
 ##  [![Created by Futurescale](images/created-by.png)](https://futurescale.com)

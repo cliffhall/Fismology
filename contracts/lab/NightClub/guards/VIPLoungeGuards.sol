@@ -40,7 +40,7 @@ contract VIPLoungeGuards is NightClubGuardBase {
     returns(string memory message)
     {
         if (compare(_nextStateName, DANCEFLOOR)) {
-            message = "\"Hol' up,\" you say. \"That's may jam!'\" You proceed to get your funk on.";
+            message = "\"Hol' up,\" you say. \"That's may jam!'\" You proceed, in your way, to get down.";
         } else if (compare(_nextStateName, RESTROOM)) {
             message = "\"Enough of this nonsense,\" you say, heading for the line outside the restroom. There should be a Super-VIP lounge with its own head. You'll totally do that whenever you open your own club. Totally.";
         } else if (compare(_nextStateName, BAR)) {

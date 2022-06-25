@@ -65,12 +65,13 @@
         let fismoABI, fismoView, operator, currentState, transitions, transition, opt, actionId, actionMsg;
         let keyToken, keyTokenABI, hasKeyToken, keyField;
         let desiredChain = "80001"; // Polygon Mumbai Testnet
-        let confirmationThreshold = 2; // How many confirmations before assuming success
+        let confirmationThreshold = 3; // How many confirmations before assuming success
         let tx, txHash, confirmations = 0, gasLimit = "2000000";
         let onboarding, wallet, accounts, connected = false;
         let connectButton, goButton, keyButton, walletField, stateField, inputForm, actionSelect;
         let lockedImg, openedImg, closedImg, sendingImg, waitingImg;
         let machineId = Fismo.nameToId("LockableDoor");
+        let machineUri, metadataUrl, metadata, message;
 
         // URL of the Polygon Mumbai block explorer
         const explorer = "https://mumbai.polygonscan.com/";
@@ -159,6 +160,37 @@
             }
         ];
 
+
+        // ---- --- ---- --- --- FETCH MACHINE METADATA  --- ----- ---- ---- ----
+
+        async function fetchMetadata() {
+
+            // Get Machine URI which points to the machine metadata
+            console.log('📋 Fetching machine metadata URI from Fismo contract ...');
+            response = await fismoView.methods.getMachineURI(machineId).call();
+
+            // Extract just the CID
+            machineUri = response.split('//')[1];
+            console.log(`✅ Lockable Door Machine URI: ${machineUri}`);
+
+            // Build url for metadata via NFT.Storage gateway link
+            metadataUrl = `https://nftstorage.link/ipfs/${machineUri}`;
+            console.log(`📋 Fetching machine metadata from IPFS ...`);
+
+            // Fetch the metadata
+            fetch(metadataUrl)
+                .then(response => response.text()) // pluck out the data
+                .then(async text => {
+
+                    // Parse the response into an object
+                    metadata = JSON.parse(text);
+                    console.log(`✅ Metadata fetched.`);
+
+                    // Update the UI with the network status
+                    await fetchCurrentState();
+                });
+        }
+
         // ---- ---- ---- ---- --- FETCH CURRENT STATE  ---- ----- ---- ---- ----
 
         function addActionSelectOption(value, label) {
@@ -171,8 +203,10 @@
         async function fetchCurrentState() {
 
             // Get user's current state from the fismo contract and marshal response into entity
+            console.log('📋 Fetching your current state from Fismo contract ...');
             const response = await fismoView.methods.getUserState(accounts[0], machineId).call();
             currentState = Fismo.State.fromStruct(response);
+            console.log(`✅ Current state: ${currentState.name}`);
 
             // Manage display of current State
             stateField.value = currentState.name;
@@ -243,6 +277,7 @@
             hideKeyButton();
             transaction
                 .on('transactionHash', function(hash){
+                    console.log(`✅ Received transaction hash, waiting for ${confirmationThreshold} confirmations ...`);
                     txHash = hash;
                     confirmations = 0;
                     showTxLink(txHash);
@@ -252,22 +287,24 @@
                         sendingImg.classList.add("hide");
                         waitingImg.classList.remove("hide");
                     }
-                    if (++confirmations > confirmationThreshold) {
+                    if (++confirmations === confirmationThreshold) {
+                        transaction.off('confirmation');
                         confirmations = 0;
                         waitingImg.classList.add("hide");
                         hideTxLink();
+                        console.log(`💥 Received confirmation ${confirmationThreshold} ...`);
                         await fetchCurrentState();
-                        transaction.off('confirmation');
                     }
+                    if (confirmations > 0) console.log(`💥 Received confirmation ${confirmations} ...`);
                 })
                 .on('error', async function(error, receipt) {
+                    transaction.off('confirmation');
                     confirmations = 0;
                     sendingImg.classList.add("hide");
                     waitingImg.classList.add("hide");
                     hideTxLink();
+                    console.log("❌ Tx error:", error.message);
                     await fetchCurrentState();
-                    transaction.off('confirmation');
-                    console.log("transaction error:", error);
                 });
         }
 
@@ -282,18 +319,22 @@
         }
 
         async function mintRequested() {
+
             // Mint the token
-            keyField.value = "Minting...";
+            keyField.value = "Minting ...";
             hideKeyButton();
             tx = keyToken.methods.mintSample(wallet, "1").send({from: wallet, gasLimit});
+            console.log(`📋 Minting a key token on the Fismo20 contract ...`);
             await handleTransaction(tx);
         }
 
         async function burnRequested() {
+
             // Burn the token
-            keyField.value = "Burning...";
+            keyField.value = "Burning ...";
             hideKeyButton();
             tx = keyToken.methods.transfer(burnAddress, "1").send({from: wallet, gasLimit});
+            console.log(`📋 Burning a key token on the Fismo20 contract ...`);
             await handleTransaction(tx);
         }
 
@@ -356,6 +397,7 @@
             sendingImg.classList.remove("hide");
 
             // Invoke the action
+            console.log(`📋 Invoking action on the Operator contract ...`);
             tx = operator.methods.invokeAction(machineId, actionId).send({from: wallet, gasLimit});
             handleTransaction(tx);
         }
@@ -381,7 +423,7 @@
         }
 
         async function onConnectButtonClick() {
-
+            console.log(`📋 Connecting to Web3 wallet ...`);
             // Is metamask available?
             if (window.ethereum) {
 
@@ -407,17 +449,19 @@
                     setConnected(accounts[0]);
                 }
 
-                // Get the current state
-                await fetchCurrentState();
+                // Get the machine metadata
+                await fetchMetadata();
             }
 
         }
 
         async function setDisconnected() {
+            message = 'Connect Wallet';
             inputForm.classList.add('hide');
-            connectButton.innerText = 'Connect Wallet';
+            connectButton.innerText = message;
             connectButton.disabled = false;
             connectButton.onclick = onConnectButtonClick;
+            console.log(`⛓ Wallet not connected.`);
         }
 
         function setConnected(account) {
@@ -428,13 +472,15 @@
             connectButton.onclick = null;
             connectButton.disabled = true;
             if (isCorrectNetwork()) {
-                connectButton.innerText = 'Wallet Connected';
+                message = 'Wallet Connected';
+                connectButton.innerText = message;
                 inputForm.classList.remove('hide');
             } else {
-                connectButton.innerText = 'Wrong Network';
+                message = 'Wrong Network';
+                connectButton.innerText = message;
                 inputForm.classList.add('hide');
             }
-
+            console.log(`✅ ${message}: ${wallet}`);
         }
 
         async function refreshNetworkStatus() {
@@ -514,7 +560,7 @@
                 <li class="nav-item"><a href="https://docs.fismo.xyz" class="nav-link link" type="button" rel="noopener noreferrer nofollow">Docs</a></li>
                 <li class="nav-item"><a href="https://lab.fismo.xyz" class="nav-link link" type="button" rel="noopener noreferrer nofollow">Lab</a></li>
                 <li class="nav-item">
-                    <button id="connect" type="button" disabled class="btn darkBg">Loading...</button>
+                    <button id="connect" type="button" disabled class="btn darkBg">Loading ...</button>
                 </li>
             </ul>
         </header>

@@ -13,7 +13,7 @@ module.exports = {
         "block_explorer": "YOUR_POLYGONSCAN_API_KEY", // POLYGONSCAN
 //        "block_explorer": "YOUR_ETHERSCAN_API_KEY", // ETHERSCAN
         "coinmarketcap": "YOUR_COINMARKETCAP_API_KEY",
-        "nft.storage":  "YOUR_NFT_STORAGE_API_KEY"
+        "nft_storage":  "YOUR_NFT_STORAGE_API_KEY"
     },
 
     "network": {

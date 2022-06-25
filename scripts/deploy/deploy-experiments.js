@@ -1,12 +1,13 @@
 //--------------------------------------------------------------------------------------------------------------------
-// Deploy one or more experiment
+// Deploy one or more experiments
 // Uses exported Experiment Descriptors from scripts/lab/experiments.js
 //
 // 👇 Configure the experiments to deploy and whether to verify on block explorer 👇
 //--------------------------------------------------------------------------------------------------------------------
-const {LockableDoor} = require("../lab/experiments");
-const experiments = [LockableDoor];
-const verify = true;
+const {LockableDoorExperiment} = require("../lab/experiments");
+const experiments = [LockableDoorExperiment];
+const updateMetadata = true;   // upload machine metadata and update machine with location
+const verify = true;           // verify with block explorer
 //--------------------------------------------------------------------------------------------------------------------
 
 // Workaday imports
@@ -15,6 +16,7 @@ const ethers = hre.ethers;
 const network = hre.network.name;
 const eip55 = require('eip55');
 const {deployExperiment} = require("../util/deploy-experiment");
+const {deployMetadata} = require("../util/deploy-metadata");
 const {delay, deploymentComplete, verifyOnEtherscan} = require("../util/report-verify");
 
 // Environment config
@@ -89,6 +91,26 @@ async function main() {
 
     // Deploy experiments
     for (const experiment of experiments) {
+        if (updateMetadata && !!experiment.metadata) {
+            console.log(`\n📦 INSTALLING METADATA: ${experiment.metadata.name}`);
+            try {
+                // Flatten the metadata object
+                const json = JSON.stringify(experiment.metadata);
+
+                // Deploy the metadata and get the IPFS CID back
+                const cid = await deployMetadata(json);
+
+                // Update the URI for the machine we're about to deploy
+                experiment.machine.uri = `ipfs://${cid}`;
+                console.log(`✅  Metadata deployed. Machine URI: ${experiment.machine.uri}`);
+                console.log(`✋  Be sure to add/update the machine's URI in lab/machines.js`);
+                console.log(`   And set updateMetadata to false in this script's header.`);
+                console.log(`   Otherwise you will redeploy the metadata each time you deploy the ${experiment.name} experiment.`);
+            } catch (e) {
+                console.log(`❌ ${e}`);
+            }
+        }
+
         console.log(`\n📦 INSTALLING MACHINE: ${experiment.machine.name}`);
         try {
             [operator, operatorArgs, guards, machine, tokens] = await deployExperiment(owner, fismo, experiment, gasLimit);

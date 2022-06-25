@@ -2,14 +2,18 @@ module.exports = {
 
     // block_explorer
     // - API key for verifying contracts with hardhat-etherscan
-    // - uncomment the one you will be using and comment the other
+    //   uncomment the one you will be using and comment the other
     //
     // coinmarketcap
     // - api key for CoinMarketCap used with hardhat-gas-reporter
+    //
+    // nft.storage
+    // - api key for NFT.Storage Filecoin/IPFS gateway
     "apiKey": {
         "block_explorer": "YOUR_POLYGONSCAN_API_KEY", // POLYGONSCAN
 //        "block_explorer": "YOUR_ETHERSCAN_API_KEY", // ETHERSCAN
-        "coinmarketcap": "YOUR_COINMARKETCAP_API_KEY"
+        "coinmarketcap": "YOUR_COINMARKETCAP_API_KEY",
+        "nft_storage":  "YOUR_NFT_STORAGE_API_KEY"
     },
 
     "network": {

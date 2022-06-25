@@ -9,4 +9,27 @@
 ✋ Be sure to update environments.js
 ➡️ Set network.poly-test.deployments.Fismo to "0x0aD049ce599ca7c93c9301f13448a687c70D4D0C"
 
+--------------------------------------------------------------------------------
+💥 Clone Fismo
+--------------------------------------------------------------------------------
+⛓ Network: poly-test (mumbai)
+📅 Sat Jun 25 2022 12:43:08 GMT-0400 (Eastern Daylight Time)
+🔱 Owner account:  0xAc59a3da0E748b29e43FfaAEEa731E17250a4C47
+--------------------------------------------------------------------------------
+🧪 Your new Fismo clone: 0x1B9ba133009a686fa1FbAaF737b489f4fE68edCE
+✋ Be sure to update environments.js
+➡️ Set network.poly-test.deployments.Fismo to "0x1B9ba133009a686fa1FbAaF737b489f4fE68edCE"
+
+Compiled 40 Solidity files successfully
+--------------------------------------------------------------------------------
+💥 Clone Fismo
+--------------------------------------------------------------------------------
+⛓ Network: poly-test (mumbai)
+📅 Sat Jun 25 2022 14:51:41 GMT-0400 (Eastern Daylight Time)
+🔱 Owner account:  0xAc59a3da0E748b29e43FfaAEEa731E17250a4C47
+--------------------------------------------------------------------------------
+🧪 Your new Fismo clone: 0x4cda80BCC04194AB245F5D85872136CD092eF48C
+✋ Be sure to update environments.js
+➡️ Set network.poly-test.deployments.Fismo to "0x4cda80BCC04194AB245F5D85872136CD092eF48C"
+
 

@@ -1,5 +1,6 @@
 const environments = require('./environments');
 require("@nomiclabs/hardhat-etherscan");
+require("@nomiclabs/hardhat-waffle");
 
 module.exports = {
   defaultNetwork: "hardhat",

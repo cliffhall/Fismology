@@ -39,9 +39,14 @@ npm install
 - API keys are only needed for deploying to public networks.
 - `environments.js` is included in `.gitignore` and will not be committed to the repo.
 - For your target Ethereum network environment, set:
+    * `gasLimit`: override the default gasLimit for transactions
+    * `explorer`: the url of the etherscan-based block explorer
     * `txNode`: the endpoint for sending ethereum transactions
     * `mnemonic`: a valid ethereum HD wallet seed phrase (first wallet is used as deployer)
     * `deployments.Fismo`: your clone of the official Fismo deployment
     * `deployments.Operator`: your clone of the official Fismo deployment
-- For verifying code and running the gas reporter, set:
-    * `apiKey.block_explorer`: your etherscan/poloygonscan/etc API key
+
+- API Keys are needed for various operations:
+  * `apiKey.block_explorer`: your etherscan/poloygonscan/etc API key (used to verify deployed contracts)
+  * `apiKey.coinmarketcap`: your API key for CoinMarketCap (used with hardhat-gas-reporter)
+  * `apikey.nft_storage`: your API key for NFT.Storage Filecoin/IPFS gateway

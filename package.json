@@ -26,26 +26,28 @@
     "build:contracts": "npx hardhat compile",
     "clone:fismo:poly:test": "npx hardhat run --network poly-test scripts/deploy/clone-fismo.js >> logs/clone.poly.test.txt",
     "clone:fismo:poly:main": "npx hardhat run --network poly-main scripts/deploy/clone-fismo.js >> logs/clone.poly.main.txt",
-    "clone:fismo:eth:test": "npx hardhat run --network eth-test scripts/deploy/clone-fismo.js >> logs/clone.eth.test.txt",
-    "clone:fismo:eth:test-2": "npx hardhat run --network eth-test-2 scripts/deploy/clone-fismo.js >> logs/clone.eth.test.2.txt",
-    "clone:fismo:eth:main": "npx hardhat run --network eth-main scripts/deploy/clone-fismo.js >> logs/clone.eth.main.txt",
-    "deploy:labs:local": "npx hardhat run --network hardhat scripts/deploy/deploy-experiments.js",
+    "clone:fismo:eth:main":  "npx hardhat run --network eth-main scripts/deploy/clone-fismo.js >> logs/clone.eth.main.txt",
+    "deploy:labs:local":     "npx hardhat run --network hardhat scripts/deploy/deploy-experiments.js",
     "deploy:labs:poly:test": "npx hardhat run --network poly-test scripts/deploy/deploy-experiments.js >> logs/deploy.poly.test.txt",
     "deploy:labs:poly:main": "npx hardhat run --network poly-main scripts/deploy/deploy-experiments.js >> logs/deploy.poly.main.txt",
-    "deploy:labs:eth:test": "npx hardhat run --network eth-test scripts/deploy/deploy-experiments.js >> logs/deploy.eth.test.txt",
-    "deploy:labs:eth:test-2": "npx hardhat run --network eth-test-2 scripts/deploy/deploy-experiments.js >> logs/deploy.eth.test.2.txt",
-    "deploy:labs:eth:main": "npx hardhat run --network eth-main scripts/deploy/deploy-experiments.js >> logs/deploy.eth.main.txt"
+    "deploy:labs:eth:main":  "npx hardhat run --network eth-main scripts/deploy/deploy-experiments.js >> logs/deploy.eth.main.txt"
   },
   "dependencies": {
     "@metamask/onboarding": "^1.0.1",
-    "fismo": "^0.6.8"
+    "fismo": "^0.6.8",
+    "nft.storage": "^6.3.0"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.4",
     "@nomiclabs/hardhat-etherscan": "^3.0.0",
+    "@nomiclabs/hardhat-waffle": "^2.0.2",
     "@openzeppelin/contracts": "^4.4.2",
     "eip55": "^2.1.0",
     "ethers": "^5.5.3",
-    "hardhat": "^2.8.3"
+    "hardhat": "^2.8.3",
+    "hardhat-contract-sizer": "^2.4.0",
+    "hardhat-gas-reporter": "^1.0.7",
+    "solhint": "^3.3.6",
+    "solidity-coverage": "^0.7.18"
   }
 }

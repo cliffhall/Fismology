@@ -32,3 +32,85 @@ for verification on the block explorer. Waiting for verification result...
 
 Successfully Fismo20 contract on Etherscan.
 https://mumbai.polygonscan.com/address/0xF24355d530d029459AC30d63eF79d555F8b06e88#code
+
+--------------------------------------------------------------------------------
+💥 Deploy Experiments
+--------------------------------------------------------------------------------
+⛓  Network: poly-test (mumbai)
+📅 Sat Jun 25 2022 12:57:31 GMT-0400 (Eastern Daylight Time)
+🔱 Owner account:  0xAc59a3da0E748b29e43FfaAEEa731E17250a4C47
+--------------------------------------------------------------------------------
+Nothing to compile
+
+📦 INSTALLING METADATA: LockableDoor
+✅  Metadata deployed. Machine URI: ipfs://bafkreidesmqwxqjsrc7i2ef7odriel6ovm5ifriybpfh53tyecfd52ow5y
+✋  Be sure to add/update the machine's URI in lab/machines.js
+
+📦 INSTALLING MACHINE: LockableDoor
+✅ Machine installed on your existing Fismo contract: 0x1B9ba133009a686fa1FbAaF737b489f4fE68edCE
+🧪 Your new Operator clone: 0xA06CE7c95f0EF5c348eb20E6Dca61a240581208C
+✋ Be sure to update environments.js
+➡️ Set network.poly-test.deployments.Operator to "0xA06CE7c95f0EF5c348eb20E6Dca61a240581208C"
+✅  LockableDoorGuards deployed to: 0x4fDdef83F9fD450339123De4618a3B0a144BF072
+✅  Fismo20 deployed to: 0x0ef391a6d223116812C2BcA655D5BF0434D79198
+⏲ Pause one minute, allowing deployments to propagate to Etherscan backend...
+🔍 Verifying contracts on Etherscan...
+
+📋 Verifying LockableDoorGuards
+Nothing to compile
+Successfully submitted source code for contract
+contracts/lab/LockableDoor/LockableDoorGuards.sol:LockableDoorGuards at 0x4fDdef83F9fD450339123De4618a3B0a144BF072
+for verification on the block explorer. Waiting for verification result...
+
+Successfully verified contract LockableDoorGuards on Etherscan.
+https://mumbai.polygonscan.com/address/0x4fDdef83F9fD450339123De4618a3B0a144BF072#code
+
+📋 Verifying Fismo20
+Compiled 40 Solidity files successfully
+Successfully submitted source code for contract
+contracts/lab/Tokens/Fismo20.sol:Fismo20 at 0x0ef391a6d223116812C2BcA655D5BF0434D79198
+for verification on the block explorer. Waiting for verification result...
+
+Successfully verified contract Fismo20 on Etherscan.
+https://mumbai.polygonscan.com/address/0x0ef391a6d223116812C2BcA655D5BF0434D79198#code
+
+--------------------------------------------------------------------------------
+💥 Deploy Experiments
+--------------------------------------------------------------------------------
+⛓  Network: poly-test (mumbai)
+📅 Sat Jun 25 2022 14:53:27 GMT-0400 (Eastern Daylight Time)
+🔱 Owner account:  0xAc59a3da0E748b29e43FfaAEEa731E17250a4C47
+--------------------------------------------------------------------------------
+Nothing to compile
+
+📦 INSTALLING METADATA: LockableDoor
+✅  Metadata deployed. Machine URI: ipfs://bafkreidesmqwxqjsrc7i2ef7odriel6ovm5ifriybpfh53tyecfd52ow5y
+✋  Be sure to add/update the machine's URI in lab/machines.js
+
+📦 INSTALLING MACHINE: LockableDoor
+✅ Machine installed on your existing Fismo contract: 0x4cda80BCC04194AB245F5D85872136CD092eF48C
+🧪 Your new Operator clone: 0xa18854e6Cc86dA64F0C0FFfD37d804773C3C9e48
+✋ Be sure to update environments.js
+➡️ Set network.poly-test.deployments.Operator to "0xa18854e6Cc86dA64F0C0FFfD37d804773C3C9e48"
+✅  LockableDoorGuards deployed to: 0x9Af82e04f345822fB13457d10C5ee349F7781cdE
+✅  Fismo20 deployed to: 0xbf602Ea1dDD59a73eF97F6940E2bEDd98d7F4A3b
+⏲ Pause one minute, allowing deployments to propagate to Etherscan backend...
+🔍 Verifying contracts on Etherscan...
+
+📋 Verifying LockableDoorGuards
+Nothing to compile
+Successfully submitted source code for contract
+contracts/lab/LockableDoor/LockableDoorGuards.sol:LockableDoorGuards at 0x9Af82e04f345822fB13457d10C5ee349F7781cdE
+for verification on the block explorer. Waiting for verification result...
+
+Successfully verified contract LockableDoorGuards on Etherscan.
+https://mumbai.polygonscan.com/address/0x9Af82e04f345822fB13457d10C5ee349F7781cdE#code
+
+📋 Verifying Fismo20
+Compiled 40 Solidity files successfully
+Successfully submitted source code for contract
+contracts/lab/Tokens/Fismo20.sol:Fismo20 at 0xbf602Ea1dDD59a73eF97F6940E2bEDd98d7F4A3b
+for verification on the block explorer. Waiting for verification result...
+
+Successfully verified contract Fismo20 on Etherscan.
+https://mumbai.polygonscan.com/address/0xbf602Ea1dDD59a73eF97F6940E2bEDd98d7F4A3b#code

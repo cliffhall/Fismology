@@ -20,7 +20,7 @@ The Fismology Lab has been established as a place where we can explore the possi
       * ✅ Contextually suppressed actions
       * ✅ Machine-specific storage slot
       * ✅ Token-gated state transition
-      * ✅ Guard contract initializer
+      * ✅ Machine initializer
       * ✅ Machine metadata
 
 ##  [![Created by Futurescale](images/created-by.png)](https://futurescale.com)

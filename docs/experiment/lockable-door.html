@@ -69,7 +69,7 @@
         let tx, txHash, confirmations = 0, gasLimit = "2000000";
         let onboarding, wallet, accounts, connected = false;
         let connectButton, goButton, keyButton, walletField, stateField, inputForm, actionSelect;
-        let lockedImg, openedImg, closedImg, sendingImg, waitingImg, consoleLog;
+        let lockedImg, openedImg, closedImg, sendingImg, waitingImg, consoleLog, descField;
         let machineId = Fismo.nameToId("LockableDoor");
         let machineUri, metadataUrl, metadata, message;
 
@@ -94,6 +94,9 @@
 
         // Burn address for burning key token to
         const burnAddress = "0x000000000000000000000000000000000000dead";
+
+        // URL for the Fismo ABI
+        const fismoAbi = "https://cdn.jsdelivr.net/npm/fismo/sdk/fismo-abi.json";
 
         // KeyToken (Fismo20) ABI
         keyTokenABI = [
@@ -192,9 +195,36 @@
                     metadata = JSON.parse(text);
                     log(`✅ Metadata fetched.`);
 
+                    // Prepare the images found in the metadata
+                    prepareImages();
+
                     // Update the UI with the network status
                     await fetchCurrentState();
                 });
+        }
+
+        // ---- --- ---- --- --- PREPARE STATE IMAGES  --- ----- ---- ---- ----
+
+        function prepareImages() {
+
+            log('📋 Preparing state images from metadata ...');
+
+            const prepare = target => {
+                const display = document.getElementById('display');
+                const image = document.createElement('img');
+                const state = metadata.states.find(state => state.name === target);
+                image.src = state.image;
+                image.title = state.title;
+                display.appendChild(image);
+                image.classList.add("overlay");
+                image.classList.add("hide");
+                return image;
+            }
+
+            lockedImg = prepare("Locked");
+            openedImg = prepare("Opened");
+            closedImg = prepare("Closed");
+
         }
 
         // ---- ---- ---- ---- --- FETCH CURRENT STATE  ---- ----- ---- ---- ----
@@ -216,6 +246,7 @@
 
             // Manage display of current State
             stateField.value = currentState.name;
+            descField.innerText = metadata.states.find(state => state.id === currentState.id).description;
             switch (currentState.name) {
                 case "Closed":
                     lockedImg.classList.add("hide");
@@ -224,12 +255,14 @@
                     break;
 
                 case "Locked":
+                    descField.value = lockedImg.title;
                     lockedImg.classList.remove("hide");
                     openedImg.classList.add("hide");
                     closedImg.classList.add("hide");
                     break;
 
                 case "Opened":
+                    descField.value = openedImg.title;
                     lockedImg.classList.add("hide");
                     openedImg.classList.remove("hide");
                     closedImg.classList.add("hide");
@@ -515,6 +548,7 @@
             onboarding = new MetaMaskOnboarding();
 
             // Get handles to DOM elements
+            descField = document.getElementById('description');
             connectButton = document.getElementById('connect');
             actionSelect = document.getElementById('actions');
             consoleLog = document.getElementById('consoleLog');
@@ -538,7 +572,7 @@
             });
 
             // Get the Fismo ABI from the SDK
-            fetch("https://cdn.jsdelivr.net/npm/fismo/sdk/fismo-abi.json")
+            fetch(fismoAbi)
                 .then(response => {
                     return response.text();
                 })
@@ -584,8 +618,7 @@
 
                 <!-- Form Header -->
                 <h1 class="display-5 fw-bold lh-1 mb-3">Lockable Door</h1>
-                <b>Interact with a Fismo Machine installed on a public blockchain.</b>
-                <br/><br/>
+                <div class="description" id="description">Interact with a Fismo Machine installed on a public blockchain.</div>
                 <div class="col-lg">
                     <ul >
                     <li>Connect your wallet to the <b>Polygon Mumbai Testnet</b> network.</li>
@@ -664,25 +697,11 @@
             <!-- Machine / State Display -->
             <div class="col-lg-6">
 
-                <div class="visual">
+                <div id="display" class="visual">
 
                     <!-- Machine Background -->
                     <img id="machine" class="machine" src="images/machine.png"/>
 
-                    <!-- Locked Overlay -->
-                    <img id="state-locked" class="overlay hide" src="images/LockableDoor/Locked.png"
-                         onload="lockedImg = document.getElementById('state-locked');"
-                         width="100%"/>
-
-                    <!-- Closed Overlay -->
-                    <img id="state-closed"  class="overlay hide" src="images/LockableDoor/Closed.png"
-                         onload="closedImg = document.getElementById('state-closed');"
-                         width="100%"/>
-
-                    <!-- Opened Overlay -->
-                    <img id="state-opened" class="overlay hide" src="images/LockableDoor/Opened.png"
-                         onload="openedImg = document.getElementById('state-opened');"
-                         width="100%"/>
                 </div>
 
             </div>

@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 pragma solidity ^0.8.0;
 
-import "fismo/contracts/domain/FismoStore.sol";
-import "fismo/contracts/domain/FismoConstants.sol";
-
 /**
  * @notice KeyToken is the Fismo ERC-20, which we only check for a balance of
  */
@@ -20,7 +17,7 @@ interface KeyToken {
  * - Transition Guards: Exit
  * - Action Filter: Suppress 'Unlock' action if user doesn't have key
  */
-contract LockableDoorGuards is FismoConstants {
+contract LockableDoorGuards {
 
     event LockableDoorInitialized(address keyToken);
 
@@ -59,14 +56,6 @@ contract LockableDoorGuards is FismoConstants {
     function initialize(address _keyToken)
     external
     {
-        // Make sure _keyToken isn't the zero address
-        // Note: specifically testing a revert with no reason here
-        require(_keyToken != address(0));
-
-        // Make sure _keyToken address has code
-        // Note: specifically testing a revert with a reason here
-        requireContractCode(_keyToken, CODELESS_INITIALIZER);
-
         // Initialize key token
         lockableDoorSlot().keyToken = KeyToken(_keyToken);
 
@@ -105,13 +94,9 @@ contract LockableDoorGuards is FismoConstants {
     view
     returns(string memory)
     {
-        // Make sure _user isn't the owner address
-        // Note: specifically testing a revert with no reason here
-        require(_user != FismoStore.getStore().owner);
-
         // User must have key to unlock door
         bool hasKey = isKeyHolder(_user);
-        require(hasKey);
+        require(hasKey, "A key token is required to open the door.");
 
         // Success response message
         return "Door unlocked.";
@@ -135,22 +120,6 @@ contract LockableDoorGuards is FismoConstants {
     returns (bool)
     {
         return lockableDoorSlot().keyToken.balanceOf(_user) > 0;
-    }
-
-    /**
-     * @notice Verify an address is a contract and not an EOA
-     *
-     * Reverts if address has no contract code
-     *
-     * @param _contract - the contract to check
-     * @param _errorMessage - the revert reason to throw
-     */
-    function requireContractCode(address _contract, string memory _errorMessage) internal view {
-        uint256 contractSize;
-        assembly {
-            contractSize := extcodesize(_contract)
-        }
-        require(contractSize > 0, _errorMessage);
     }
 
 }

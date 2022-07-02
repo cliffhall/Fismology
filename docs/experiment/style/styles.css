@@ -21,6 +21,12 @@ ground */
     width: 100%;
 }
 
+.description {
+    height: 50px;
+    font-weight: bold;
+}
+
+
 .hide {
     display: none !important;
 }

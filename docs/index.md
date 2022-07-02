@@ -5,7 +5,7 @@ nav_order: 1
 ---
 # Building With the Fismo SDK
 #### Working in the Fismology Lab
-> _Fismo is not your average protocol. It's straight-up weird. But so is protein folding, and that's why people show up to the lab every day to study it._
+> _When you have a hammer, everything looks like a nail. When you have Fismo, everything looks like a state machine._
 
 [Fismo](https://github.com/cliffhall/Fismo) machines are a way of simulating processes, branching narratives, maps of places, or nearly any stateful thing you can imagine.
 
@@ -16,11 +16,11 @@ The Fismology Lab has been established as a place where we can explore the possi
 #### Lab Experiments
   * 🧪 _Lockable Door_ - Representing a Physical System
     * 💥 **[Try it now!](experiment/lockable-door.html)**
-    * 📋 _Demonstrates the following Fismo features:_
+    * 📋 _Exercises the following Fismo features:_
       * ✅ Contextually suppressed actions
       * ✅ Machine-specific storage slot
-      * ✅ Token-gated state transition
-      * ✅ Machine initializer
+      * ✅ Guarded state transitions
+      * ✅ Machine initializers
       * ✅ Machine metadata
 
 ##  [![Created by Futurescale](images/created-by.png)](https://futurescale.com)

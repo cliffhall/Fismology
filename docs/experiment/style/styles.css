@@ -26,6 +26,13 @@ ground */
     font-weight: bold;
 }
 
+.list {
+    margin-top: 20px;
+}
+
+.form {
+    margin-top: 30px;
+}
 
 .hide {
     display: none !important;

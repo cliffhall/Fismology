@@ -241,7 +241,7 @@
             // Get user's current state from the fismo contract and marshal response into entity
             log('📋 Fetching your current state from Fismo contract ...');
             const response = await fismoView.methods.getUserState(accounts[0], machineId).call();
-            currentState = Fismo.State.fromStruct(response);
+            currentState = Fismo.State.fromObject(response);
             log(`✅ Current state: ${currentState.name}`);
 
             // Manage display of current State

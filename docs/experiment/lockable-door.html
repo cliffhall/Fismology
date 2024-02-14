@@ -321,22 +321,20 @@
                     confirmations = 0;
                     showTxLink(txHash);
                 })
-                .on('confirmation', async function(confirmationNumber, receipt){
-                    if (confirmationNumber === 1) {
+                .on('confirmation', async function(){
+                    if (++confirmations <= confirmationThreshold) log(`💥 Received confirmation ${confirmations} ...`);
+                    if (confirmations === 1) {
                         sendingImg.classList.add("hide");
                         waitingImg.classList.remove("hide");
-                    }
-                    if (++confirmations === confirmationThreshold) {
+                    } else if (confirmations === confirmationThreshold) {
                         transaction.off('confirmation');
-                        confirmations = 0;
+                        console.log(`wtf?`)
                         waitingImg.classList.add("hide");
                         hideTxLink();
-                        log(`💥 Received confirmation ${confirmationThreshold} ...`);
                         await fetchCurrentState();
                     }
-                    if (confirmations > 0) log(`💥 Received confirmation ${confirmations} ...`);
                 })
-                .on('error', async function(error, receipt) {
+                .on('error', async function(error) {
                     transaction.off('confirmation');
                     confirmations = 0;
                     sendingImg.classList.add("hide");

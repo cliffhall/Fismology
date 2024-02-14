@@ -328,7 +328,6 @@
                         waitingImg.classList.remove("hide");
                     } else if (confirmations === confirmationThreshold) {
                         transaction.off('confirmation');
-                        console.log(`wtf?`)
                         waitingImg.classList.add("hide");
                         hideTxLink();
                         await fetchCurrentState();

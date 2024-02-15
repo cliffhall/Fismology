@@ -74,23 +74,23 @@
         let machineUri, metadataUrl, metadata, message;
 
         // URL of the Polygon Mumbai block explorer
-        const explorer = "https://mumbai.polygonscan.com/";
+        const explorer = "https://mumbai.polygonscan.com";
 
         // Clone of the official Fismo contract on Polygon Mumbai
         // NOTE: Actions on this contract must be initiated by the Operator contract specified by the installed Machine
-        const fismoAddress = "0x4cda80BCC04194AB245F5D85872136CD092eF48C";
+        const fismoAddress = "0x612954c8d6a66fE0D5eEDE1bB2145d88E99403B7";
 
         // Clone of the official Operator contract on Polygon Mumbai
         // NOTE: This is the contract that we use to invoke actions. It is specified by the installed Machine
-        const operatorAddress = "0xa18854e6Cc86dA64F0C0FFfD37d804773C3C9e48";
+        const operatorAddress = "0x26802f6cd187aD5277Dc9964678260a3d4Ee2B82";
 
         // Deployed instance of LockableDoorGuards contract
         // NOTE: Transactions don't go to this contract. Fismo uses it as a logic implementation for transition guards
-        const guardAddress = "0x9Af82e04f345822fB13457d10C5ee349F7781cdE";
+        const guardAddress = "0xe747458085000A7C1D7335e9799eB20ceB0046e1";
 
         // Deployed instance of Fismo20 contract on Polygon Mumbai
         // NOTE: This contract is used as the key token for unlocking the door
-        const keyTokenAddress = "0xbf602Ea1dDD59a73eF97F6940E2bEDd98d7F4A3b";
+        const keyTokenAddress = "0xB895Bc216252D67DE68D1141Bde3E03DefE76172";
 
         // Burn address for burning key token to
         const burnAddress = "0x000000000000000000000000000000000000dead";

@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@metamask/onboarding": "^1.0.1",
-    "fismo": "^0.6.8",
+    "fismo": "^0.7.0",
     "nft.storage": "^7.1.1"
   },
   "devDependencies": {

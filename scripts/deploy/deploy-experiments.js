@@ -105,7 +105,7 @@ async function main() {
                 console.log(`✅  Metadata deployed. Machine URI: ${experiment.machine.uri}`);
                 console.log(`✋  Be sure to add/update the machine's URI in lab/machines.js`);
                 console.log(`   And set updateMetadata to false in this script's header.`);
-                console.log(`   Otherwise you will redeploy the metadata each time you deploy the ${experiment.name} experiment.`);
+                console.log(`   Otherwise you will redeploy the metadata each time you deploy the ${experiment.machine.name} experiment.`);
             } catch (e) {
                 console.log(`❌ ${e}`);
             }

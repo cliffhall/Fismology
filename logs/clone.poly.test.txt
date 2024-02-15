@@ -33,3 +33,23 @@ Compiled 40 Solidity files successfully
 ➡️ Set network.poly-test.deployments.Fismo to "0x4cda80BCC04194AB245F5D85872136CD092eF48C"
 
 
+--------------------------------------------------------------------------------
+💥 Clone Fismo
+--------------------------------------------------------------------------------
+⛓ Network: poly-test (mumbai)
+📅 Thu Feb 15 2024 11:37:05 GMT-0500 (Eastern Standard Time)
+🔱 Owner account:  0xAc59a3da0E748b29e43FfaAEEa731E17250a4C47
+--------------------------------------------------------------------------------
+✋ You already have a Fismo clone at: 0x4cda80BCC04194AB245F5D85872136CD092eF48C
+--------------------------------------------------------------------------------
+💥 Clone Fismo
+--------------------------------------------------------------------------------
+⛓ Network: poly-test (mumbai)
+📅 Thu Feb 15 2024 11:38:31 GMT-0500 (Eastern Standard Time)
+🔱 Owner account:  0xAc59a3da0E748b29e43FfaAEEa731E17250a4C47
+--------------------------------------------------------------------------------
+🧪 Your new Fismo clone: 0x612954c8d6a66fE0D5eEDE1bB2145d88E99403B7
+✋ Be sure to update environments.js
+➡️ Set network.poly-test.deployments.Fismo to "0x612954c8d6a66fE0D5eEDE1bB2145d88E99403B7"
+
+

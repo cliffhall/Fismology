@@ -114,3 +114,39 @@ for verification on the block explorer. Waiting for verification result...
 
 Successfully verified contract Fismo20 on Etherscan.
 https://mumbai.polygonscan.com/address/0xbf602Ea1dDD59a73eF97F6940E2bEDd98d7F4A3b#code
+--------------------------------------------------------------------------------
+💥 Deploy Experiments
+--------------------------------------------------------------------------------
+⛓  Network: poly-test (mumbai)
+📅 Thu Feb 15 2024 11:41:08 GMT-0500 (Eastern Standard Time)
+🔱 Owner account:  0xAc59a3da0E748b29e43FfaAEEa731E17250a4C47
+--------------------------------------------------------------------------------
+Nothing to compile
+
+📦 INSTALLING METADATA: LockableDoor
+✅  Metadata deployed. Machine URI: ipfs://bafkreidesmqwxqjsrc7i2ef7odriel6ovm5ifriybpfh53tyecfd52ow5y
+✋  Be sure to add/update the machine's URI in lab/machines.js
+   And set updateMetadata to false in this script's header.
+   Otherwise you will redeploy the metadata each time you deploy the undefined experiment.
+
+📦 INSTALLING MACHINE: LockableDoor
+✅ Machine installed on your existing Fismo contract: 0x612954c8d6a66fE0D5eEDE1bB2145d88E99403B7
+🧪 Your new Operator clone: 0x26802f6cd187aD5277Dc9964678260a3d4Ee2B82
+✋ Be sure to update environments.js
+➡️ Set network.poly-test.deployments.Operator to "0x26802f6cd187aD5277Dc9964678260a3d4Ee2B82"
+✅  LockableDoorGuards deployed to: 0xe747458085000A7C1D7335e9799eB20ceB0046e1
+✅  Fismo20 deployed to: 0xB895Bc216252D67DE68D1141Bde3E03DefE76172
+⏲ Pause one minute, allowing deployments to propagate to Etherscan backend...
+🔍 Verifying contracts on Etherscan...
+
+📋 Verifying LockableDoorGuards
+Nothing to compile
+Successfully submitted source code for contract
+contracts/lab/LockableDoor/LockableDoorGuards.sol:LockableDoorGuards at 0xe747458085000A7C1D7335e9799eB20ceB0046e1
+for verification on the block explorer. Waiting for verification result...
+
+Successfully verified contract LockableDoorGuards on Etherscan.
+https://mumbai.polygonscan.com/address/0xe747458085000A7C1D7335e9799eB20ceB0046e1#code
+
+📋 Verifying Fismo20
+The contract 0xB895Bc216252D67DE68D1141Bde3E03DefE76172 has already been verified

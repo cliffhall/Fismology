@@ -150,3 +150,45 @@ https://mumbai.polygonscan.com/address/0xe747458085000A7C1D7335e9799eB20ceB0046e
 
 📋 Verifying Fismo20
 The contract 0xB895Bc216252D67DE68D1141Bde3E03DefE76172 has already been verified
+--------------------------------------------------------------------------------
+💥 Deploy Experiments
+--------------------------------------------------------------------------------
+⛓  Network: poly-test (amoy)
+📅 Thu Apr 18 2024 13:20:24 GMT-0400 (Eastern Daylight Time)
+🔱 Owner account:  0xAc59a3da0E748b29e43FfaAEEa731E17250a4C47
+--------------------------------------------------------------------------------
+Nothing to compile
+
+📦 INSTALLING METADATA: LockableDoor
+✅  Metadata deployed. Machine URI: ipfs://bafkreidesmqwxqjsrc7i2ef7odriel6ovm5ifriybpfh53tyecfd52ow5y
+✋  Be sure to add/update the machine's URI in lab/machines.js
+   And set updateMetadata to false in this script's header.
+   Otherwise you will redeploy the metadata each time you deploy the LockableDoor experiment.
+
+📦 INSTALLING MACHINE: LockableDoor
+✅ Machine installed on your existing Fismo contract: 0x5d4A1aC507433fA70D6F188405ab9778cd8E60EF
+🧪 Your new Operator clone: 0x7b3821148EFC2047416b1BDC180704c4f38aD381
+✋ Be sure to update environments.js
+➡️ Set network.poly-test.deployments.Operator to "0x7b3821148EFC2047416b1BDC180704c4f38aD381"
+✅  LockableDoorGuards deployed to: 0x1cDA0A811516FE388fA19296c2ac3eF6fF429503
+✅  Fismo20 deployed to: 0x42c4f97F21C23a71058b6E0e360D0dFD60399611
+⏲ Pause one minute, allowing deployments to propagate to Etherscan backend...
+🔍 Verifying contracts on Etherscan...
+
+📋 Verifying LockableDoorGuards
+Successfully submitted source code for contract
+contracts/lab/LockableDoor/LockableDoorGuards.sol:LockableDoorGuards at 0x1cDA0A811516FE388fA19296c2ac3eF6fF429503
+for verification on the block explorer. Waiting for verification result...
+
+Successfully verified contract LockableDoorGuards on the block explorer.
+https://amoy.polygonscan.com/address/0x1cDA0A811516FE388fA19296c2ac3eF6fF429503#code
+
+
+📋 Verifying Fismo20
+Successfully submitted source code for contract
+contracts/lab/Tokens/Fismo20.sol:Fismo20 at 0x42c4f97F21C23a71058b6E0e360D0dFD60399611
+for verification on the block explorer. Waiting for verification result...
+
+Successfully verified contract Fismo20 on the block explorer.
+https://amoy.polygonscan.com/address/0x42c4f97F21C23a71058b6E0e360D0dFD60399611#code
+

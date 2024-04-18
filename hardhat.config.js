@@ -1,5 +1,5 @@
 const environments = require('./environments');
-require("@nomiclabs/hardhat-etherscan");
+require("@nomicfoundation/hardhat-verify");
 require("@nomiclabs/hardhat-waffle");
 
 module.exports = {
@@ -38,7 +38,19 @@ module.exports = {
     }
   },
   etherscan: {
-    apiKey: environments.apiKey.block_explorer
+    apiKey: {
+      "poly-test": environments.apiKey['block_explorer']["poly-test"]
+    },
+    customChains: [
+      {
+        network: "poly-test",
+        chainId: 80002,
+        urls: {
+          apiURL: "https://api-amoy.polygonscan.com/api",
+          browserURL: "https://amoy.polygonscan.com"
+        }
+      }
+    ]
   },
   solidity: {
     version: "0.8.9",

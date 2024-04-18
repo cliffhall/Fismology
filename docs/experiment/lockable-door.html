@@ -64,7 +64,7 @@
 
         let fismoABI, fismoView, operator, currentState, transitions, transition, opt, actionId, actionMsg;
         let keyToken, keyTokenABI, hasKeyToken, keyField;
-        let desiredChain = "80001"; // Polygon Mumbai Testnet
+        let desiredChain = "80002"; // Polygon Amoy Testnet
         let confirmationThreshold = 3; // How many confirmations before assuming success
         let tx, txHash, confirmations = 0, gasLimit = "2000000";
         let onboarding, wallet, accounts, connected = false;
@@ -73,24 +73,24 @@
         let machineId = Fismo.nameToId("LockableDoor");
         let machineUri, metadataUrl, metadata, message;
 
-        // URL of the Polygon Mumbai block explorer
-        const explorer = "https://mumbai.polygonscan.com";
+        // URL of the Polygon Amoy block explorer
+        const explorer = "https://amoy.polygonscan.com";
 
-        // Clone of the official Fismo contract on Polygon Mumbai
+        // Clone of the official Fismo contract on Polygon Amoy
         // NOTE: Actions on this contract must be initiated by the Operator contract specified by the installed Machine
-        const fismoAddress = "0x612954c8d6a66fE0D5eEDE1bB2145d88E99403B7";
+        const fismoAddress = "0x5d4A1aC507433fA70D6F188405ab9778cd8E60EF";
 
-        // Clone of the official Operator contract on Polygon Mumbai
+        // Clone of the official Operator contract on Polygon Amoy
         // NOTE: This is the contract that we use to invoke actions. It is specified by the installed Machine
-        const operatorAddress = "0x26802f6cd187aD5277Dc9964678260a3d4Ee2B82";
+        const operatorAddress = "0x7b3821148EFC2047416b1BDC180704c4f38aD381";
 
         // Deployed instance of LockableDoorGuards contract
         // NOTE: Transactions don't go to this contract. Fismo uses it as a logic implementation for transition guards
-        const guardAddress = "0xe747458085000A7C1D7335e9799eB20ceB0046e1";
+        const guardAddress = "0x1cDA0A811516FE388fA19296c2ac3eF6fF429503";
 
-        // Deployed instance of Fismo20 contract on Polygon Mumbai
+        // Deployed instance of Fismo20 contract on Polygon Amoy
         // NOTE: This contract is used as the key token for unlocking the door
-        const keyTokenAddress = "0xB895Bc216252D67DE68D1141Bde3E03DefE76172";
+        const keyTokenAddress = "0x42c4f97F21C23a71058b6E0e360D0dFD60399611";
 
         // Burn address for burning key token to
         const burnAddress = "0x000000000000000000000000000000000000dead";
@@ -618,7 +618,7 @@
                 <div class="description" id="description">Interact with a Fismo Machine installed on a public blockchain.</div>
                 <div class="col-lg list">
                     <ul >
-                    <li>Connect your wallet to the <b>Polygon Mumbai Testnet</b> network.</li>
+                    <li>Connect your wallet to the <b>Polygon Amoy Testnet</b> network.</li>
                     <li>Your current state in the machine will be shown.</li>
                     <li>Choose an action and click <b>Let's Go!</b></li>
                     <li>View cloned
@@ -740,22 +740,22 @@
                 </div>
                 <div class="feature col">
                     <h2>2. Configure</h2>
-                    <p>Configure MetaMask for the <b>Polygon Mumbai Testnet</b> network.</p>
-                    <p>In order to view the assets in your account on the <b>Polygon Mumbai Testnet</b> network, you may need to configure the URL on Metamask.</p>
+                    <p>Configure MetaMask for the <b>Polygon Amoy Testnet</b> network.</p>
+                    <p>In order to view the assets in your account on the <b>Polygon Amoy Testnet</b> network, you may need to configure the URL on Metamask.</p>
                 </div>
                 <div class="feature col">
                     <h2>3. Connect</h2>
                     <p>On the form above, click the button that says <b>"Connect Wallet"</b>.</p>
                     <p>MetaMask will open a window to ask if you'd like to connect to this site. Click <b>"Connect"</b>.</p>
                     <p>The <b>"Connect Wallet"</b> button above will be replaced with the phrase <b>"Wallet Connected"</b>.</p>
-                    <p>If you see the phrase <b>"Wrong Network"</b>, click the MetaMask icon on your browser and choose the <b>Polygon Mumbai Testnet</b> network from the dropdown at the top.</p>
+                    <p>If you see the phrase <b>"Wrong Network"</b>, click the MetaMask icon on your browser and choose the <b>Polygon Amoy Testnet</b> network from the dropdown at the top.</p>
                 </div>
                 <div class="feature col">
                     <h2>4. Get $MATIC</h2>
-                    <p>You can get a small amount of free <b>Polygon Mumbai $MATIC</b> at the
+                    <p>You can get a small amount of free <b>Polygon Amoy $MATIC</b> at the
                         <a href="https://faucet.polygon.technology/" target="_blank" rel="noopener noreferrer nofollow" class="link">Polygon Faucet</a>.
                     </p>
-                    <p>If you need a lot, you can get up to 5 free <b>Polygon Mumbai $MATIC</b> in the
+                    <p>If you need a lot, you can get up to 5 free <b>Polygon Amoy $MATIC</b> in the
                         <a href="https://discord.gg/H6rTaXMcqW" target="_blank" rel="noopener noreferrer nofollow" class="link">Polygon Discord</a>.
                     </p>
                 </div>

@@ -24,7 +24,7 @@ Deployment is expensive, cloning is cheap.
 
 The script `scripts/deploy/clone-fismo.js` creates a clone of the official Fismo deployment (found in the SDK) for the specified network.
 
-#### Polygon Mumbai Testnet
+#### Polygon Amoy Testnet
 * ```npm run clone:fismo:poly:test```
 
 #### Polygon Matic Mainnet
@@ -52,7 +52,7 @@ Once you have a Fismo clone and have an experiment built, the script `scripts/de
 
 * Study the LockedDoor experiment for how initialization of an installed machine is done, should you need it.
 
-#### Polygon Mumbai Testnet
+#### Polygon Amoy Testnet
 * ```npm run deploy:labs:poly:test```
 
 #### Polygon Matic Mainnet

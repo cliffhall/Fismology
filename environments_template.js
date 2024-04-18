@@ -59,15 +59,15 @@ module.exports = {
             }
         },
 
-        "poly-test": {   // Polygon Mumbai testnet
+        "poly-test": {   // Polygon Amoy testnet
             "mnemonic": "your twelve word mnemonic phrase here...",
-            "txNode": "https://rpc-mumbai.maticvigil.com/v1/[API_KEY_HERE]",
-            "explorer": "https://mumbai.polygonscan.com/",
+            "txNode": "https://rpc-amoy.polygon.technology/[API_KEY_HERE]",
+            "explorer": "https://amoy.polygonscan.com/",
             "gasLimit": "10000000",
             "chain": {
-                "title": "Polygon Mumbai Testnet",
-                "name": "mumbai",
-                "chainId": 80001
+                "title": "Polygon Amoy Testnet",
+                "name": "amoy",
+                "chainId": 80002
             },
             "deployments": {
                 "fismo": "[YOUR_FISMO_OR_CLONE_ADDRESS]",

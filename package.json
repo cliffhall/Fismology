@@ -26,20 +26,20 @@
     "build:contracts": "npx hardhat compile",
     "clone:fismo:poly:test": "npx hardhat run --network poly-test scripts/deploy/clone-fismo.js >> logs/clone.poly.test.txt",
     "clone:fismo:poly:main": "npx hardhat run --network poly-main scripts/deploy/clone-fismo.js >> logs/clone.poly.main.txt",
-    "clone:fismo:eth:main":  "npx hardhat run --network eth-main scripts/deploy/clone-fismo.js >> logs/clone.eth.main.txt",
-    "deploy:labs:local":     "npx hardhat run --network hardhat scripts/deploy/deploy-experiments.js",
+    "clone:fismo:eth:main": "npx hardhat run --network eth-main scripts/deploy/clone-fismo.js >> logs/clone.eth.main.txt",
+    "deploy:labs:local": "npx hardhat run --network hardhat scripts/deploy/deploy-experiments.js",
     "deploy:labs:poly:test": "npx hardhat run --network poly-test scripts/deploy/deploy-experiments.js >> logs/deploy.poly.test.txt",
     "deploy:labs:poly:main": "npx hardhat run --network poly-main scripts/deploy/deploy-experiments.js >> logs/deploy.poly.main.txt",
-    "deploy:labs:eth:main":  "npx hardhat run --network eth-main scripts/deploy/deploy-experiments.js >> logs/deploy.eth.main.txt"
+    "deploy:labs:eth:main": "npx hardhat run --network eth-main scripts/deploy/deploy-experiments.js >> logs/deploy.eth.main.txt"
   },
   "dependencies": {
     "@metamask/onboarding": "^1.0.1",
-    "fismo": "^0.7.0",
+    "fismo": "^0.7.2",
     "nft.storage": "^7.1.1"
   },
   "devDependencies": {
+    "@nomicfoundation/hardhat-verify": "^2.0.6",
     "@nomiclabs/hardhat-ethers": "^2.2.3",
-    "@nomiclabs/hardhat-etherscan": "^3.1.8",
     "@nomiclabs/hardhat-waffle": "^2.0.6",
     "@openzeppelin/contracts": "^4.4.2",
     "eip55": "^2.1.0",

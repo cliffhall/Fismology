@@ -183,7 +183,8 @@
             log(`✅ Lockable Door Machine URI: ${machineUri}`);
 
             // Build url for metadata via NFT.Storage gateway link
-            metadataUrl = `https://gateway.pinata.cloud/ipfs/${machineUri}`;
+            metadataUrl = `https://${machineUri}.ipfs.nftstorage.link/#x-ipfs-companion-no-redirect`
+            //metadataUrl = `https://gateway.pinata.cloud/ipfs/${machineUri}`;
             log(`📋 Fetching machine metadata from IPFS ...`);
 
             // Fetch the metadata
